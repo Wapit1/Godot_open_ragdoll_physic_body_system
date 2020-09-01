@@ -6,16 +6,4 @@ it is done the nimsony way which is physics driven (joint between body and hands
 
 it is currently barely working and as high potential to give motion sickness, so play safe
 
-missing feature:
-
-	Needs to allow hand rotation
-
-	Have the physic body follow the kinematic body when possible (when not possible either block the player view or snap him back into the physic body)
-	
-	Have the kinematic body follow the physic body with a smoothed movement and optional FoV vignette
-
-possible improvement :
-
-	better turning option
-	
-	better grabbing joints and grab point system
+progression Trello : https://trello.com/invite/b/ZyVSvv1W/ba46c6ba186ab76d19c9ecc32a77cca0/godot-vr-physic-body-system

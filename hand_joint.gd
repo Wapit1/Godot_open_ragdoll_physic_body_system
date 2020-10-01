@@ -27,9 +27,8 @@ func _ready():
 	
 	if !disable:
 #		set the starting offset, would probably need to take the rotation offset into accound too
-		offset = get_node(get_node_b()).global_transform.origin - get_node(get_node_a()).global_transform.origin
-		
-		
+		offset = (get_node(get_node_b()).global_transform.origin - get_node(get_node_a()).global_transform.origin)
+	
 #		set as spring
 		set("linear_limit_x/enabled",false)
 		set("linear_spring_x/enabled",true)
@@ -59,10 +58,10 @@ func _ready():
 		if can_rotate:
 			set("angular_limit_x/enabled",false)
 			set("angular_spring_x/enabled",true)
-			set("angular_limit_y/enabled",false)
-			set("angular_spring_y/enabled",true)
-			set("angular_limit_z/enabled",false)
-			set("angular_spring_z/enabled",true)
+#			set("angular_limit_y/enabled",false)
+#			set("angular_spring_y/enabled",true)
+#			set("angular_limit_z/enabled",false)
+#			set("angular_spring_z/enabled",true)
 			
 			set("angular_spring_x/stiffness",rot_stiffness)
 			set("angular_spring_y/stiffness",rot_stiffness)
@@ -76,18 +75,22 @@ func _ready():
 		
 func _physics_process(delta):
 	if follow_node != null && !disable:
-		var follow_origin :Vector3 = (follow_node.global_transform.origin - center_node.global_transform.origin)
-		follow_origin = (follow_origin+ offset) * multiplier
+		var target_pos :Vector3 = (center_node.global_transform.origin - follow_node.global_transform.origin) - global_transform.origin
+		# works well until the body (center node and node B) moves, at the start there is an difference of 0,05 (the difference between offset and body position)
+		# the hand are on the right position + the global position of the body, but not getting the body position result in flying to infinity
+		
+		target_pos = (target_pos+ offset) * multiplier
 		if negative:
-			follow_origin = -follow_origin
-		# needs to take rotation of the bodies into account
+			target_pos = -target_pos
+#		if can_rotate:
+#			target_pos.rotated(Vector3(1,0,0), PI/2)
+#		get_node(get_node_a()).global_transform.basis.get_euler().x
 		
-		
-		set("linear_spring_x/equilibrium_point", clamp(follow_origin.x,-max_lenght.x, max_lenght.x))
-		set("linear_spring_y/equilibrium_point", clamp(follow_origin.y,-max_lenght.y, max_lenght.y))
-		set("linear_spring_z/equilibrium_point", clamp(follow_origin.z,-max_lenght.z, max_lenght.z))
+		set("linear_spring_x/equilibrium_point", clamp(target_pos.x,-max_lenght.x, max_lenght.x))
+		set("linear_spring_y/equilibrium_point", clamp(target_pos.y,-max_lenght.y, max_lenght.y))
+		set("linear_spring_z/equilibrium_point", clamp(target_pos.z,-max_lenght.z, max_lenght.z))
 		
 		if can_rotate:
 			set("angular_spring_x/equilibrium_point", follow_node.global_transform.basis.get_euler().x)
-			set("angular_spring_y/equilibrium_point", follow_node.global_transform.basis.get_euler().y)
-			set("angular_spring_z/equilibrium_point", follow_node.global_transform.basis.get_euler().z)
+#			set("angular_spring_y/equilibrium_point", follow_node.global_transform.basis.get_euler().y)
+#			set("angular_spring_z/equilibrium_point", follow_node.global_transform.basis.get_euler().z)

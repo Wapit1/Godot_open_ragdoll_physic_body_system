@@ -32,7 +32,7 @@ func _ready():
 		get_viewport().arvr = true
 		get_viewport().hdr = false
 		OS.vsync_enabled = false
-		Engine.target_fps = 90
+		Engine.target_fps = 144
 	else:
 		print('no interface')
 	rightcontrol.connect("farb_start",self,"change_followbody")

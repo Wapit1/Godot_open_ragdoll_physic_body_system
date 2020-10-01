@@ -74,6 +74,19 @@ material/0 = null
 [node name="CollisionShape" type="CollisionShape" parent="left_hand"]
 shape = SubResource( 3 )
 
+[node name="left_hand_joint" type="Generic6DOFJoint" parent="left_hand"]
+nodes/node_a = NodePath("../../left_hand")
+nodes/node_b = NodePath("../../body")
+linear_limit_x/enabled = false
+linear_spring_x/enabled = true
+linear_limit_y/enabled = false
+linear_spring_y/enabled = true
+linear_limit_z/enabled = false
+linear_spring_z/enabled = true
+script = ExtResource( 2 )
+follow_nodepath = NodePath("../../body/armlessVRplayer/ARVROrigin/ARVRController")
+center_nodepath = NodePath("..")
+
 [node name="right_hand" type="RigidBody" parent="."]
 mass = 0.01
 physics_material_override = SubResource( 4 )
@@ -91,6 +104,19 @@ material/0 = null
 
 [node name="CollisionShape" type="CollisionShape" parent="right_hand"]
 shape = SubResource( 3 )
+
+[node name="right_hand_joint" type="Generic6DOFJoint" parent="right_hand"]
+nodes/node_a = NodePath("../../right_hand")
+nodes/node_b = NodePath("../../body")
+linear_limit_x/enabled = false
+linear_spring_x/enabled = true
+linear_limit_y/enabled = false
+linear_spring_y/enabled = true
+linear_limit_z/enabled = false
+linear_spring_z/enabled = true
+script = ExtResource( 2 )
+follow_nodepath = NodePath("../../body/armlessVRplayer/ARVROrigin/ARVRController_2")
+center_nodepath = NodePath("..")
 
 [node name="body" type="RigidBody" parent="."]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0 )
@@ -113,46 +139,14 @@ transform = Transform( 1, 0, 0, 0, -1.62921e-07, -1, 0, 1, -1.62921e-07, 0, -0.5
 mesh = SubResource( 6 )
 material/0 = null
 
-[node name="Generic6DOFJoint" type="Generic6DOFJoint" parent="body"]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1.09326, 0 )
-nodes/node_a = NodePath("../../left_hand")
-nodes/node_b = NodePath("..")
-linear_limit_x/enabled = false
-linear_spring_x/enabled = true
-linear_limit_y/enabled = false
-linear_spring_y/enabled = true
-linear_limit_z/enabled = false
-linear_spring_z/enabled = true
-script = ExtResource( 2 )
-follow_nodepath = NodePath("../armlessVRplayer/ARVROrigin/ARVRController")
-center_nodepath = NodePath("..")
-stiffness = 20.0
-negative = true
-
-[node name="Generic6DOFJoint3" type="Generic6DOFJoint" parent="body"]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1.09326, 0 )
-nodes/node_a = NodePath("../../right_hand")
-nodes/node_b = NodePath("..")
-linear_limit_x/enabled = false
-linear_spring_x/enabled = true
-linear_limit_y/enabled = false
-linear_spring_y/enabled = true
-linear_limit_z/enabled = false
-linear_spring_z/enabled = true
-script = ExtResource( 2 )
-follow_nodepath = NodePath("../armlessVRplayer/ARVROrigin/ARVRController_2")
-center_nodepath = NodePath("..")
-stiffness = 20.0
-negative = true
-
 [node name="armlessVRplayer" type="KinematicBody" parent="body"]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0 )
 collision_layer = 2
 collision_mask = 0
 script = ExtResource( 1 )
-left_hand_p = NodePath("../left_hand")
-right_hand_p = NodePath("../right_hand")
-bodypath = NodePath("../body")
+left_hand_p = NodePath("ARVROrigin/ARVRController")
+right_hand_p = NodePath("ARVROrigin/ARVRController_2")
+bodypath = NodePath("..")
 
 [node name="body_joint" type="Generic6DOFJoint" parent="body/armlessVRplayer"]
 nodes/node_a = NodePath("..")

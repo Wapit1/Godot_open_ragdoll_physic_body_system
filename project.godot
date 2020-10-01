@@ -25,7 +25,7 @@ singletons=[ "res://addons/godot-openvr/godot_openvr.gdnlib" ]
 
 [physics]
 
-common/physics_fps=90
+common/physics_fps=144
 
 [rendering]
 

@@ -85,7 +85,7 @@ linear_limit_z/enabled = false
 linear_spring_z/enabled = true
 script = ExtResource( 2 )
 follow_nodepath = NodePath("../../body/armlessVRplayer/ARVROrigin/ARVRController")
-center_nodepath = NodePath("..")
+center_nodepath = NodePath("../../body")
 
 [node name="right_hand" type="RigidBody" parent="."]
 mass = 0.01
@@ -116,7 +116,7 @@ linear_limit_z/enabled = false
 linear_spring_z/enabled = true
 script = ExtResource( 2 )
 follow_nodepath = NodePath("../../body/armlessVRplayer/ARVROrigin/ARVRController_2")
-center_nodepath = NodePath("..")
+center_nodepath = NodePath("../../body")
 
 [node name="body" type="RigidBody" parent="."]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0 )

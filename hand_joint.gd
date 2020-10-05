@@ -27,7 +27,7 @@ func _ready():
 	
 	if !disable:
 #		set the starting offset, would probably need to take the rotation offset into accound too
-		offset = (get_node(get_node_b()).global_transform.origin - get_node(get_node_a()).global_transform.origin)
+		offset = get_node(get_node_a()).global_transform.origin - get_node(get_node_b()).global_transform.origin
 	
 #		set as spring
 		set("linear_limit_x/enabled",false)
@@ -75,7 +75,7 @@ func _ready():
 		
 func _physics_process(delta):
 	if follow_node != null && !disable:
-		var target_pos :Vector3 = (center_node.global_transform.origin - follow_node.global_transform.origin) - global_transform.origin
+		var target_pos :Vector3 = -(follow_node.global_transform.origin - center_node.global_transform.origin )
 		# works well until the body (center node and node B) moves, at the start there is an difference of 0,05 (the difference between offset and body position)
 		# the hand are on the right position + the global position of the body, but not getting the body position result in flying to infinity
 		

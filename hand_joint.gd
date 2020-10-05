@@ -17,11 +17,11 @@ export var negative : bool = false
 var offset :Vector3 = Vector3.ZERO
 
 export var can_rotate : bool = false
-export var rot_stiffness : float = 5.0
-export var rot_damping : float   = 0.8
+export var rot_stiffness : float = 0.01
+export var rot_damping : float   = 0.001
 
 export var disable : = false
-export var max_lenght : Vector3 = Vector3.INF
+export var max_length : Vector3 = Vector3.INF
 
 func _ready():
 	
@@ -45,15 +45,15 @@ func _ready():
 		set("linear_spring_z/damping",damping)
 	
 #	print(get("linear_spring_x/damping"))
-		if max_lenght.length() != INF:
-			set("linear_spring_x/upper_distance",max_lenght.z)
-			set("linear_spring_y/upper_distance",max_lenght.z)
-			set("linear_spring_z/upper_distance",max_lenght.z)
+		if max_length.length() != INF:
+			set("linear_spring_x/upper_distance",max_length.z)
+			set("linear_spring_y/upper_distance",max_length.z)
+			set("linear_spring_z/upper_distance",max_length.z)
 			
 			set("linear_limit_x/enabled",true)
 			set("linear_limit_y/enabled",true)
 			set("linear_limit_z/enabled",true)
-	#		print_debug('max_lenght active')
+	#		print_debug('max_length active')
 
 		if can_rotate:
 			set("angular_limit_x/enabled",false)
@@ -62,11 +62,11 @@ func _ready():
 #			set("angular_spring_y/enabled",true)
 #			set("angular_limit_z/enabled",false)
 #			set("angular_spring_z/enabled",true)
-			
+
 			set("angular_spring_x/stiffness",rot_stiffness)
 			set("angular_spring_y/stiffness",rot_stiffness)
 			set("angular_spring_z/stiffness",rot_stiffness)
-		
+
 			set("angular_spring_x/damping",rot_damping)
 			set("angular_spring_y/damping",rot_damping)
 			set("angular_spring_z/damping",rot_damping)
@@ -76,19 +76,18 @@ func _ready():
 func _physics_process(delta):
 	if follow_node != null && !disable:
 		var target_pos :Vector3 = -(follow_node.global_transform.origin - center_node.global_transform.origin )
-		# works well until the body (center node and node B) moves, at the start there is an difference of 0,05 (the difference between offset and body position)
-		# the hand are on the right position + the global position of the body, but not getting the body position result in flying to infinity
+	
 		
 		target_pos = (target_pos+ offset) * multiplier
 		if negative:
 			target_pos = -target_pos
-#		if can_rotate:
-#			target_pos.rotated(Vector3(1,0,0), PI/2)
-#		get_node(get_node_a()).global_transform.basis.get_euler().x
+		if can_rotate:
+			target_pos.rotated(Vector3(1,0,0), follow_node.global_transform.basis.get_euler().x)
+#		follow_node.global_transform.basis.get_euler().x
 		
-		set("linear_spring_x/equilibrium_point", clamp(target_pos.x,-max_lenght.x, max_lenght.x))
-		set("linear_spring_y/equilibrium_point", clamp(target_pos.y,-max_lenght.y, max_lenght.y))
-		set("linear_spring_z/equilibrium_point", clamp(target_pos.z,-max_lenght.z, max_lenght.z))
+		set("linear_spring_x/equilibrium_point", clamp(target_pos.x,-max_length.x, max_length.x))
+		set("linear_spring_y/equilibrium_point", clamp(target_pos.y,-max_length.y, max_length.y))
+		set("linear_spring_z/equilibrium_point", clamp(target_pos.z,-max_length.z, max_length.z))
 		
 		if can_rotate:
 			set("angular_spring_x/equilibrium_point", follow_node.global_transform.basis.get_euler().x)

@@ -86,6 +86,7 @@ linear_spring_z/enabled = true
 script = ExtResource( 2 )
 follow_nodepath = NodePath("../../body/armlessVRplayer/ARVROrigin/ARVRController")
 center_nodepath = NodePath("../../body")
+can_rotate = true
 
 [node name="right_hand" type="RigidBody" parent="."]
 mass = 0.01

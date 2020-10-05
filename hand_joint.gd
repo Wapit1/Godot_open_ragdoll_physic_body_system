@@ -76,8 +76,6 @@ func _ready():
 func _physics_process(delta):
 	if follow_node != null && !disable:
 		var target_pos :Vector3 = -(follow_node.global_transform.origin - center_node.global_transform.origin )
-		# works well until the body (center node and node B) moves, at the start there is an difference of 0,05 (the difference between offset and body position)
-		# the hand are on the right position + the global position of the body, but not getting the body position result in flying to infinity
 		
 		target_pos = (target_pos+ offset) * multiplier
 		if negative:

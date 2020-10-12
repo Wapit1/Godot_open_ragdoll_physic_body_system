@@ -1,4 +1,4 @@
-[gd_scene load_steps=18 format=2]
+[gd_scene load_steps=19 format=2]
 
 [ext_resource path="res://armlessVRplayer.gd" type="Script" id=1]
 [ext_resource path="res://hand_joint.gd" type="Script" id=2]
@@ -16,41 +16,45 @@ size = Vector3( 0.2, 0.2, 0.2 )
 margin = 0.001
 extents = Vector3( 0.1, 0.1, 0.1 )
 
-[sub_resource type="PhysicsMaterial" id=4]
+[sub_resource type="CapsuleMesh" id=4]
+radius = 0.01
+mid_height = 0.3
+
+[sub_resource type="PhysicsMaterial" id=5]
 friction = 10.0
 rough = true
 
-[sub_resource type="CapsuleShape" id=5]
+[sub_resource type="CapsuleShape" id=6]
 margin = 0.001
 radius = 0.2
 
-[sub_resource type="CapsuleMesh" id=6]
+[sub_resource type="CapsuleMesh" id=7]
 radius = 0.1
 
-[sub_resource type="SphereMesh" id=7]
+[sub_resource type="SphereMesh" id=8]
 radius = 0.2
 height = 0.2
 
-[sub_resource type="CapsuleShape" id=8]
+[sub_resource type="CapsuleShape" id=9]
 radius = 0.2
 height = 0.8
 
-[sub_resource type="SphereMesh" id=9]
+[sub_resource type="SphereMesh" id=10]
 radius = 0.2
 height = 0.4
 
-[sub_resource type="CapsuleMesh" id=10]
+[sub_resource type="CapsuleMesh" id=11]
 radius = 0.01
 mid_height = 0.2
 
-[sub_resource type="SphereMesh" id=11]
+[sub_resource type="SphereMesh" id=12]
 radius = 0.1
 height = 0.2
 
-[sub_resource type="SphereShape" id=12]
+[sub_resource type="SphereShape" id=13]
 radius = 0.1
 
-[sub_resource type="SphereMesh" id=13]
+[sub_resource type="SphereMesh" id=14]
 radius = 0.1
 height = 0.2
 
@@ -88,9 +92,14 @@ follow_nodepath = NodePath("../../body/armlessVRplayer/ARVROrigin/ARVRController
 center_nodepath = NodePath("../../body")
 can_rotate = true
 
+[node name="MeshInstance" type="MeshInstance" parent="left_hand"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.0715561 )
+mesh = SubResource( 4 )
+material/0 = null
+
 [node name="right_hand" type="RigidBody" parent="."]
 mass = 0.01
-physics_material_override = SubResource( 4 )
+physics_material_override = SubResource( 5 )
 gravity_scale = 0.0
 continuous_cd = true
 contacts_reported = 10
@@ -119,6 +128,11 @@ script = ExtResource( 2 )
 follow_nodepath = NodePath("../../body/armlessVRplayer/ARVROrigin/ARVRController_2")
 center_nodepath = NodePath("../../body")
 
+[node name="MeshInstance2" type="MeshInstance" parent="right_hand"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.0715561 )
+mesh = SubResource( 4 )
+material/0 = null
+
 [node name="body" type="RigidBody" parent="."]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0 )
 collision_layer = 2
@@ -133,11 +147,11 @@ axis_lock_angular_z = true
 
 [node name="CollisionShape" type="CollisionShape" parent="body"]
 transform = Transform( 1, 0, 0, 0, -1.62921e-07, -1, 0, 1, -1.62921e-07, 0, -0.5, 0 )
-shape = SubResource( 5 )
+shape = SubResource( 6 )
 
 [node name="MeshInstance" type="MeshInstance" parent="body"]
 transform = Transform( 1, 0, 0, 0, -1.62921e-07, -1, 0, 1, -1.62921e-07, 0, -0.5, 0 )
-mesh = SubResource( 6 )
+mesh = SubResource( 7 )
 material/0 = null
 
 [node name="armlessVRplayer" type="KinematicBody" parent="body"]
@@ -162,12 +176,12 @@ linear_spring_z/enabled = true
 
 [node name="MeshInstance" type="MeshInstance" parent="body/armlessVRplayer"]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1.5, 0 )
-mesh = SubResource( 7 )
+mesh = SubResource( 8 )
 material/0 = null
 
 [node name="CollisionShape" type="CollisionShape" parent="body/armlessVRplayer"]
 transform = Transform( 1, 0, 0, 0, -1.62921e-07, -1, 0, 1, -1.62921e-07, 0, 0, 0 )
-shape = SubResource( 8 )
+shape = SubResource( 9 )
 disabled = true
 
 [node name="ARVROrigin" type="ARVROrigin" parent="body/armlessVRplayer"]
@@ -178,13 +192,13 @@ current = true
 
 [node name="MeshInstance" type="MeshInstance" parent="body/armlessVRplayer/ARVROrigin/ARVRCamera"]
 layers = 32
-mesh = SubResource( 9 )
+mesh = SubResource( 10 )
 material/0 = null
 
 [node name="MeshInstance2" type="MeshInstance" parent="body/armlessVRplayer/ARVROrigin/ARVRCamera"]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 5.21986e-08, 0, -0.160197 )
 layers = 32
-mesh = SubResource( 10 )
+mesh = SubResource( 11 )
 material/0 = null
 
 [node name="ARVRController" type="ARVRController" parent="body/armlessVRplayer/ARVROrigin"]
@@ -193,11 +207,11 @@ script = ExtResource( 6 )
 [node name="grab_area" type="Area" parent="body/armlessVRplayer/ARVROrigin/ARVRController"]
 
 [node name="MeshInstance2" type="MeshInstance" parent="body/armlessVRplayer/ARVROrigin/ARVRController/grab_area"]
-mesh = SubResource( 11 )
+mesh = SubResource( 12 )
 material/0 = null
 
 [node name="CollisionShape" type="CollisionShape" parent="body/armlessVRplayer/ARVROrigin/ARVRController/grab_area"]
-shape = SubResource( 12 )
+shape = SubResource( 13 )
 
 [node name="ARVRController_2" type="ARVRController" parent="body/armlessVRplayer/ARVROrigin"]
 controller_id = 2
@@ -206,8 +220,8 @@ script = ExtResource( 6 )
 [node name="grab_area2" type="Area" parent="body/armlessVRplayer/ARVROrigin/ARVRController_2"]
 
 [node name="MeshInstance2" type="MeshInstance" parent="body/armlessVRplayer/ARVROrigin/ARVRController_2/grab_area2"]
-mesh = SubResource( 13 )
+mesh = SubResource( 14 )
 material/0 = null
 
 [node name="CollisionShape" type="CollisionShape" parent="body/armlessVRplayer/ARVROrigin/ARVRController_2/grab_area2"]
-shape = SubResource( 12 )
+shape = SubResource( 13 )

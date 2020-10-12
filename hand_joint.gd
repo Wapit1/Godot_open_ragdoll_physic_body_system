@@ -32,10 +32,10 @@ func _ready():
 #		set as spring
 		set("linear_limit_x/enabled",false)
 		set("linear_spring_x/enabled",true)
-		set("linear_limit_y/enabled",false)
-		set("linear_spring_y/enabled",true)
-		set("linear_limit_z/enabled",false)
-		set("linear_spring_z/enabled",true)
+#		set("linear_limit_y/enabled",false)
+#		set("linear_spring_y/enabled",true)
+#		set("linear_limit_z/enabled",false)
+#		set("linear_spring_z/enabled",true)
 		set("linear_spring_x/stiffness",stiffness)
 		set("linear_spring_y/stiffness",stiffness)
 		set("linear_spring_z/stiffness",stiffness)
@@ -58,10 +58,10 @@ func _ready():
 		if can_rotate:
 			set("angular_limit_x/enabled",false)
 			set("angular_spring_x/enabled",true)
-#			set("angular_limit_y/enabled",false)
-#			set("angular_spring_y/enabled",true)
-#			set("angular_limit_z/enabled",false)
-#			set("angular_spring_z/enabled",true)
+			set("angular_limit_y/enabled",false)
+			set("angular_spring_y/enabled",true)
+			set("angular_limit_z/enabled",false)
+			set("angular_spring_z/enabled",true)
 
 			set("angular_spring_x/stiffness",rot_stiffness)
 			set("angular_spring_y/stiffness",rot_stiffness)
@@ -82,7 +82,9 @@ func _physics_process(delta):
 		if negative:
 			target_pos = -target_pos
 		if can_rotate:
-			target_pos.rotated(Vector3(1,0,0), follow_node.global_transform.basis.get_euler().x)
+			target_pos = target_pos.rotated(Vector3(1,0,0), - global_transform.basis.get_euler().x)
+#			target_pos = target_pos.rotated(Vector3(0,1,0), - global_transform.basis.get_euler().y)
+#			target_pos = target_pos.rotated(Vector3(0,0,1), - global_transform.basis.get_euler().z)
 #		follow_node.global_transform.basis.get_euler().x
 		
 		set("linear_spring_x/equilibrium_point", clamp(target_pos.x,-max_length.x, max_length.x))

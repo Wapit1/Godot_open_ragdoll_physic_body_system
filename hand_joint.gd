@@ -1,5 +1,6 @@
 extends Generic6DOFJoint
 
+var sum_delta := 0.0
 
 export var follow_nodepath : NodePath
 onready var follow_node : Spatial = get_node(follow_nodepath) 
@@ -32,14 +33,14 @@ func _ready():
 #		set as spring
 		set("linear_limit_x/enabled",false)
 		set("linear_spring_x/enabled",true)
-#		set("linear_limit_y/enabled",false)
-#		set("linear_spring_y/enabled",true)
-#		set("linear_limit_z/enabled",false)
-#		set("linear_spring_z/enabled",true)
+		set("linear_limit_y/enabled",false)
+		set("linear_spring_y/enabled",true)
+		set("linear_limit_z/enabled",false)
+		set("linear_spring_z/enabled",true)
 		set("linear_spring_x/stiffness",stiffness)
 		set("linear_spring_y/stiffness",stiffness)
 		set("linear_spring_z/stiffness",stiffness)
-	#	print(get("linear_spring_x/stiffness"))
+#	#	print(get("linear_spring_x/stiffness"))
 		set("linear_spring_x/damping",damping)
 		set("linear_spring_y/damping",damping)
 		set("linear_spring_z/damping",damping)
@@ -73,7 +74,11 @@ func _ready():
 	else: # if is disabled
 		set_physics_process(false)
 		
+
+
 func _physics_process(delta):
+	sum_delta+=delta
+	
 	if follow_node != null && !disable:
 		var target_pos :Vector3 = -(follow_node.global_transform.origin - center_node.global_transform.origin )
 	
@@ -82,16 +87,23 @@ func _physics_process(delta):
 		if negative:
 			target_pos = -target_pos
 		if can_rotate:
-			target_pos = target_pos.rotated(Vector3(1,0,0), - global_transform.basis.get_euler().x)
-#			target_pos = target_pos.rotated(Vector3(0,1,0), - global_transform.basis.get_euler().y)
-#			target_pos = target_pos.rotated(Vector3(0,0,1), - global_transform.basis.get_euler().z)
+			var rotation_self = - global_transform.basis.orthonormalized().get_euler()
+			target_pos = target_pos.rotated(Vector3(0,1,0), rotation_self.y)
+			target_pos = target_pos.rotated(Vector3(1,0,0), rotation_self.x)
+			target_pos = target_pos.rotated(Vector3(0,0,1), rotation_self.z)
 #		follow_node.global_transform.basis.get_euler().x
-		
+#			target_pos = Vector3.ZERO
 		set("linear_spring_x/equilibrium_point", clamp(target_pos.x,-max_length.x, max_length.x))
 		set("linear_spring_y/equilibrium_point", clamp(target_pos.y,-max_length.y, max_length.y))
 		set("linear_spring_z/equilibrium_point", clamp(target_pos.z,-max_length.z, max_length.z))
 		
 		if can_rotate:
-			set("angular_spring_x/equilibrium_point", follow_node.global_transform.basis.get_euler().x)
-#			set("angular_spring_y/equilibrium_point", follow_node.global_transform.basis.get_euler().y)
-#			set("angular_spring_z/equilibrium_point", follow_node.global_transform.basis.get_euler().z)
+#			var rotation_x = follow_node.global_transform.basis.orthonormalized().get_euler().x
+			var follow_rotation = follow_node.global_transform.basis.get_euler()
+#			var follow_rotation = Vector3(PI,0,0)
+			set("angular_spring_x/equilibrium_point", follow_rotation.x)
+			if sum_delta >= 1:
+				print(follow_node.global_transform.basis," : ", follow_rotation/TAU)
+				sum_delta = 0
+			set("angular_spring_y/equilibrium_point", follow_rotation.y)
+			set("angular_spring_z/equilibrium_point", follow_rotation.z)

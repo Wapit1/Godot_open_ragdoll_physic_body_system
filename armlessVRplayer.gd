@@ -15,8 +15,8 @@ onready var body : = get_node(bodypath)
 
 var followbody := false
 
-export var speed :int = 3  
-export var vertical_speed : int = 1
+export var speed :int = 30  
+export var vertical_speed : int = 10
 var r_stick_pos :float =0 
 var height_offset :float = 0
 var prev_vel : Vector3

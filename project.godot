@@ -26,6 +26,8 @@ singletons=[ "res://addons/godot-openvr/godot_openvr.gdnlib" ]
 [physics]
 
 common/physics_fps=144
+3d/physics_engine="Bullet"
+3d/default_gravity=98.0
 
 [rendering]
 

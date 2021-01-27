@@ -83,12 +83,11 @@ func drop():
 func _physics_process(delta):
 
 	
-	var correction_to_zero = PID(-angular_velocity,delta,0)
-	add_torque(correction_to_zero)
+			var correction_to_zero = PID(-angular_velocity,delta,0)
+			add_torque(correction_to_zero)
 
-#		if controller.button[1]:
-	if true:
-			var target_basis = controller.transform.basis
+
+			var target_basis = controller.global_transform.basis
 			var error_target :Vector3 = - target_basis.z.cross(transform.basis.z)
 			var correction_to_target = PID(error_target,delta,1)
 			add_torque(correction_to_target)

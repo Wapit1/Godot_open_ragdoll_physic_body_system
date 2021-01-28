@@ -47,9 +47,15 @@ current = true
 
 [node name="left_foot" type="RigidBody" parent="."]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -2, 0, 0 )
+continuous_cd = true
+contacts_reported = 1
+contact_monitor = true
+can_sleep = false
 script = ExtResource( 2 )
 body_p = NodePath("../../flatscreen_player/body")
 target_pos = Vector3( 0, 10, 0 )
+stiffness = 300
+damping = 50
 
 [node name="CollisionShape" type="CollisionShape" parent="left_foot"]
 shape = SubResource( 12 )
@@ -70,8 +76,14 @@ material/0 = null
 
 [node name="right_foot" type="RigidBody" parent="."]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 2, 0, 0 )
+continuous_cd = true
+contacts_reported = 1
+contact_monitor = true
+can_sleep = false
 script = ExtResource( 2 )
 body_p = NodePath("../../flatscreen_player/body")
+stiffness = 300
+damping = 50
 
 [node name="CollisionShape" type="CollisionShape" parent="right_foot"]
 shape = SubResource( 12 )

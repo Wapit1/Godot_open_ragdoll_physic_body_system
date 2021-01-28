@@ -1,6 +1,6 @@
 [gd_scene load_steps=12 format=2]
 
-[ext_resource path="res://armlessVRplayer.tscn" type="PackedScene" id=1]
+[ext_resource path="res://flatscreen_player.tscn" type="PackedScene" id=1]
 [ext_resource path="res://default_env.tres" type="Environment" id=2]
 [ext_resource path="res://material.tres" type="Material" id=3]
 
@@ -30,9 +30,6 @@ extents = Vector3( 0.1, 0.1, 0.1 )
 size = Vector3( 0.2, 0.2, 0.2 )
 
 [node name="game" type="Spatial"]
-
-[node name="VR full body player" parent="." instance=ExtResource( 1 )]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.85778, -0.920789 )
 
 [node name="loading" type="Spatial" parent="."]
 
@@ -603,3 +600,6 @@ shadow_atlas_size = 4096
 [node name="Camera" type="Camera" parent="Viewport"]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -2.17568, 5.6424, 10.4726 )
 current = true
+
+[node name="flatscreen_player" parent="." instance=ExtResource( 1 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -11.7282, 3.78934, -2.81388 )

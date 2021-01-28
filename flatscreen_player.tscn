@@ -1,0 +1,91 @@
+[gd_scene load_steps=7 format=2]
+
+[ext_resource path="res://phys_extremities.gd" type="Script" id=2]
+[ext_resource path="res://flatscreen_body.gd" type="Script" id=3]
+
+[sub_resource type="CapsuleShape" id=4]
+margin = 0.001
+height = 2.0
+
+[sub_resource type="CapsuleMesh" id=5]
+mid_height = 2.0
+
+[sub_resource type="BoxShape" id=12]
+extents = Vector3( 1, 0.5, 1 )
+
+[sub_resource type="CubeMesh" id=13]
+size = Vector3( 2, 1, 2 )
+
+[node name="flatscreen_player" type="Spatial"]
+
+[node name="body" type="RigidBody" parent="."]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0 )
+collision_layer = 2
+collision_mask = 0
+mass = 5.0
+continuous_cd = true
+contacts_reported = 10
+can_sleep = false
+axis_lock_angular_x = true
+axis_lock_angular_y = true
+axis_lock_angular_z = true
+script = ExtResource( 3 )
+feet = [ NodePath("../left_foot"), NodePath("../right_foot") ]
+
+[node name="CollisionShape" type="CollisionShape" parent="body"]
+transform = Transform( 1, 0, 0, 0, -1.62921e-07, -1, 0, 1, -1.62921e-07, 0, 0, 0 )
+shape = SubResource( 4 )
+
+[node name="MeshInstance" type="MeshInstance" parent="body"]
+transform = Transform( 1, 0, 0, 0, -1.62921e-07, -1, 0, 1, -1.62921e-07, 0, 0, 0 )
+mesh = SubResource( 5 )
+material/0 = null
+
+[node name="Camera" type="Camera" parent="body"]
+transform = Transform( 1, 0, 0, 0, 0.927817, 0.373036, 0, -0.373036, 0.927817, 0, 4.76601, 10.4938 )
+current = true
+
+[node name="left_foot" type="RigidBody" parent="."]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -2, 0, 0 )
+script = ExtResource( 2 )
+body_p = NodePath("../../flatscreen_player/body")
+target_pos = Vector3( 0, 10, 0 )
+
+[node name="CollisionShape" type="CollisionShape" parent="left_foot"]
+shape = SubResource( 12 )
+
+[node name="Generic6DOFJoint" type="Generic6DOFJoint" parent="left_foot"]
+nodes/node_a = NodePath("../../body")
+nodes/node_b = NodePath("..")
+linear_limit_x/enabled = false
+linear_spring_x/enabled = true
+linear_limit_y/enabled = false
+linear_spring_y/enabled = true
+linear_limit_z/enabled = false
+linear_spring_z/enabled = true
+
+[node name="MeshInstance" type="MeshInstance" parent="left_foot"]
+mesh = SubResource( 13 )
+material/0 = null
+
+[node name="right_foot" type="RigidBody" parent="."]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 2, 0, 0 )
+script = ExtResource( 2 )
+body_p = NodePath("../../flatscreen_player/body")
+
+[node name="CollisionShape" type="CollisionShape" parent="right_foot"]
+shape = SubResource( 12 )
+
+[node name="Generic6DOFJoint" type="Generic6DOFJoint" parent="right_foot"]
+nodes/node_a = NodePath("../../body")
+nodes/node_b = NodePath("..")
+linear_limit_x/enabled = false
+linear_spring_x/enabled = true
+linear_limit_y/enabled = false
+linear_spring_y/enabled = true
+linear_limit_z/enabled = false
+linear_spring_z/enabled = true
+
+[node name="MeshInstance" type="MeshInstance" parent="right_foot"]
+mesh = SubResource( 13 )
+material/0 = null

@@ -69,7 +69,7 @@ func grab():
 		is_grabbing = true
 		
 #		grab_obj.append(obj)
-
+		
 		print("grabbing")
 
 func drop():

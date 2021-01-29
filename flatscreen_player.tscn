@@ -3,17 +3,17 @@
 [ext_resource path="res://phys_extremities.gd" type="Script" id=2]
 [ext_resource path="res://flatscreen_body.gd" type="Script" id=3]
 
-[sub_resource type="CapsuleShape" id=4]
+[sub_resource type="CapsuleShape" id=1]
 margin = 0.001
 height = 2.0
 
-[sub_resource type="CapsuleMesh" id=5]
+[sub_resource type="CapsuleMesh" id=2]
 mid_height = 2.0
 
-[sub_resource type="BoxShape" id=12]
+[sub_resource type="BoxShape" id=3]
 extents = Vector3( 1, 0.5, 1 )
 
-[sub_resource type="CubeMesh" id=13]
+[sub_resource type="CubeMesh" id=4]
 size = Vector3( 2, 1, 2 )
 
 [node name="flatscreen_player" type="Spatial"]
@@ -34,11 +34,11 @@ feet = [ NodePath("../left_foot"), NodePath("../right_foot") ]
 
 [node name="CollisionShape" type="CollisionShape" parent="body"]
 transform = Transform( 1, 0, 0, 0, -1.62921e-07, -1, 0, 1, -1.62921e-07, 0, 0, 0 )
-shape = SubResource( 4 )
+shape = SubResource( 1 )
 
 [node name="MeshInstance" type="MeshInstance" parent="body"]
 transform = Transform( 1, 0, 0, 0, -1.62921e-07, -1, 0, 1, -1.62921e-07, 0, 0, 0 )
-mesh = SubResource( 5 )
+mesh = SubResource( 2 )
 material/0 = null
 
 [node name="Camera" type="Camera" parent="body"]
@@ -58,7 +58,7 @@ stiffness = 300
 damping = 50
 
 [node name="CollisionShape" type="CollisionShape" parent="left_foot"]
-shape = SubResource( 12 )
+shape = SubResource( 3 )
 
 [node name="Generic6DOFJoint" type="Generic6DOFJoint" parent="left_foot"]
 nodes/node_a = NodePath("../../body")
@@ -71,7 +71,7 @@ linear_limit_z/enabled = false
 linear_spring_z/enabled = true
 
 [node name="MeshInstance" type="MeshInstance" parent="left_foot"]
-mesh = SubResource( 13 )
+mesh = SubResource( 4 )
 material/0 = null
 
 [node name="right_foot" type="RigidBody" parent="."]
@@ -86,7 +86,7 @@ stiffness = 300
 damping = 50
 
 [node name="CollisionShape" type="CollisionShape" parent="right_foot"]
-shape = SubResource( 12 )
+shape = SubResource( 3 )
 
 [node name="Generic6DOFJoint" type="Generic6DOFJoint" parent="right_foot"]
 nodes/node_a = NodePath("../../body")
@@ -99,5 +99,5 @@ linear_limit_z/enabled = false
 linear_spring_z/enabled = true
 
 [node name="MeshInstance" type="MeshInstance" parent="right_foot"]
-mesh = SubResource( 13 )
+mesh = SubResource( 4 )
 material/0 = null

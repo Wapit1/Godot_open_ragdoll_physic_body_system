@@ -15,12 +15,16 @@ func _physics_process(delta):
 			
 			foot.target_pos = - Vector3(move_direction.x,- target_height,move_direction.y) + Vector3(foot.offset.x,0,foot.offset.z)
 #			print(foot.target_pos)
-			change_active_foot()
-			lowering_foot = 3
+			if feet.find(foot_p) == active_foot:
+				change_active_foot()
+				lowering_foot = 3
 		elif feet.find(foot_p) == active_foot:
-				foot.target_pos = Vector3(move_direction.x,target_height/5,move_direction.y) - Vector3(foot.offset.x,0,foot.offset.z)
-				if Input.is_action_just_pressed("ui_select") || lowering_foot == feet.find(foot_p):
-					print("space")
+				foot.target_pos = Vector3(move_direction.x,target_height/6,move_direction.y) - Vector3(foot.offset.x,0,foot.offset.z)
+				if Input.is_action_just_pressed("ui_select") || lowering_foot == feet.find(foot_p) \
+				 || (Vector2(foot.global_transform.origin.x - global_transform.origin.x, foot.global_transform.origin.z - global_transform.origin.z).length()) > 2.0 \
+				 && (global_transform.origin.y - foot.global_transform.origin.y) < 3:
+#					print("space")
+#					print((global_transform.origin.y - foot.global_transform.origin.y))
 					lowering_foot = feet.find(foot_p)
 					foot.target_pos = Vector3(move_direction.x,target_height,move_direction.y) - Vector3(foot.offset.x,0,foot.offset.z)
 					foot.grab()
@@ -56,6 +60,7 @@ func _physics_process(delta):
 #			foot.target_pos = Vector3(foot.offset.x,target_height,foot.offset.z)
 					
 func change_active_foot():
+	print("swap")
 	if active_foot +1 < feet.size():
 		active_foot += 1
 	else:

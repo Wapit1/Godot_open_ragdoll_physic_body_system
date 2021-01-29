@@ -31,6 +31,9 @@ size = Vector3( 0.2, 0.2, 0.2 )
 
 [node name="game" type="Spatial"]
 
+[node name="flatscreen_player" parent="." instance=ExtResource( 1 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -11.7282, 3.78934, -2.81388 )
+
 [node name="loading" type="Spatial" parent="."]
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
@@ -600,6 +603,3 @@ shadow_atlas_size = 4096
 [node name="Camera" type="Camera" parent="Viewport"]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -2.17568, 5.6424, 10.4726 )
 current = true
-
-[node name="flatscreen_player" parent="." instance=ExtResource( 1 )]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -11.7282, 3.78934, -2.81388 )

@@ -6,58 +6,45 @@ export var feet : Array
 var active_foot : int = 0
 var lowering_foot := 3
 
+export var forward_step_length : float = 3
+#export var backward_step_length : float = 2
+export var side_step_length : float = 3
+
 func _physics_process(delta):
+	var move = move_direction * Vector2(side_step_length, forward_step_length)
+	var step_length = move.length()
 	
 	for foot_p in feet:
 		var foot = get_node(foot_p)
-		if foot.is_grabbing:
+		if foot.is_grabbing && move.length() > 0:
 #			print("feet grabbing")
 			
-			foot.target_pos = - Vector3(move_direction.x,- target_height,move_direction.y) + Vector3(foot.offset.x,0,foot.offset.z)
+			foot.target_pos = - Vector3(move.x,- target_height,move.y) + Vector3(foot.offset.x,0,foot.offset.z)
 #			print(foot.target_pos)
 			if feet.find(foot_p) == active_foot:
 				change_active_foot()
 				lowering_foot = 3
-		elif feet.find(foot_p) == active_foot:
-				foot.target_pos = Vector3(move_direction.x,target_height/6,move_direction.y) - Vector3(foot.offset.x,0,foot.offset.z)
+		elif feet.find(foot_p) == active_foot && move.length() > 0:
+				foot.target_pos = Vector3(move.x/2,target_height/step_length,move.y/2) + Vector3(foot.offset.x,0,foot.offset.z)
+				
 				if Input.is_action_just_pressed("ui_select") || lowering_foot == feet.find(foot_p) \
-				 || (Vector2(foot.global_transform.origin.x - global_transform.origin.x, foot.global_transform.origin.z - global_transform.origin.z).length()) > 2.0 \
-				 && (global_transform.origin.y - foot.global_transform.origin.y) < 3:
-#					print("space")
-#					print((global_transform.origin.y - foot.global_transform.origin.y))
+				 || (Vector2(foot.global_transform.origin.x - global_transform.origin.x, foot.global_transform.origin.z - global_transform.origin.z).length()) > step_length/2 \
+				 && (global_transform.origin.y - foot.global_transform.origin.y) < abs(target_height)/step_length + 1:
 					lowering_foot = feet.find(foot_p)
-					foot.target_pos = Vector3(move_direction.x,target_height,move_direction.y) - Vector3(foot.offset.x,0,foot.offset.z)
+					foot.target_pos = Vector3(move.x,target_height,move.y) + Vector3(foot.offset.x,0,foot.offset.z)
 					foot.grab()
+#
 					
 					if lowering_foot == 1:
 						get_node(feet[0]).drop()
 					else:
 						get_node(feet[1]).drop()
+		elif move.length() > 0:
+			foot.target_pos = Vector3(0,target_height,0)
+			
 		else:
 			foot.target_pos = Vector3(foot.offset.x,target_height,foot.offset.z)
-	
-#	for foot_p in feet :
-#		var foot = get_node(foot_p)
-#		if foot.is_grabbing:
-#			#drag foot backward to move forward
-#			foot.target_pos = -Vector3(move_direction.x,-target_height,move_direction.y) + Vector3(foot.offset.x,0,foot.offset.z)
-#			if Vector2(foot.transform.origin.x,foot.transform.origin.y).round() == move_direction + Vector2(foot.offset.x,foot.offset.z):
-#				foot.drop()
-#		elif feet.find(foot_p) == active_foot:
-#			foot.target_pos = Vector3(move_direction.x,target_height/2,move_direction.y) - Vector3(foot.offset.x,0,foot.offset.z)
-##			print("move foot to target")
-##			print(move_direction + Vector2(foot.offset.x,foot.offset.z) - Vector2(foot.transform.origin.x,foot.transform.origin.y))
-#			if Vector2(foot.transform.origin.x,foot.transform.origin.y).normalized() == (move_direction - Vector2(foot.offset.x,foot.offset.z)).normalized():
-#				#touch foot to ground
-#				print("touch foot to ground")
-#				foot.target_pos = Vector3(move_direction.x,target_height,move_direction.y) - Vector3(foot.offset.x,0,foot.offset.z)
-#
-#				if foot.transform.origin.normalized() == (Vector3(move_direction.x,round(target_height),move_direction.y) - Vector3(foot.offset.x,0,foot.offset.z)).normalized():
-#					foot.grab()
-#					change_active_foot()
-#					print("foot touched ground")
-#		else:
-#			foot.target_pos = Vector3(foot.offset.x,target_height,foot.offset.z)
+
 					
 func change_active_foot():
 	print("swap")

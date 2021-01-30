@@ -1,4 +1,4 @@
-[gd_scene load_steps=7 format=2]
+[gd_scene load_steps=9 format=2]
 
 [ext_resource path="res://phys_extremities.gd" type="Script" id=2]
 [ext_resource path="res://flatscreen_body.gd" type="Script" id=3]
@@ -10,11 +10,19 @@ height = 2.0
 [sub_resource type="CapsuleMesh" id=2]
 mid_height = 2.0
 
+[sub_resource type="PhysicsMaterial" id=5]
+friction = 9.22337e+18
+rough = true
+
 [sub_resource type="BoxShape" id=3]
 extents = Vector3( 1, 0.5, 1 )
 
 [sub_resource type="CubeMesh" id=4]
 size = Vector3( 2, 1, 2 )
+
+[sub_resource type="PhysicsMaterial" id=6]
+friction = 9.22337e+18
+rough = true
 
 [node name="flatscreen_player" type="Spatial"]
 
@@ -47,6 +55,8 @@ current = true
 
 [node name="left_foot" type="RigidBody" parent="."]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -2, 0, 0 )
+collision_layer = 0
+physics_material_override = SubResource( 5 )
 continuous_cd = true
 contacts_reported = 1
 contact_monitor = true
@@ -54,7 +64,7 @@ can_sleep = false
 script = ExtResource( 2 )
 body_p = NodePath("../../flatscreen_player/body")
 target_pos = Vector3( 0, 10, 0 )
-stiffness = 300
+stiffness = 400
 damping = 50
 
 [node name="CollisionShape" type="CollisionShape" parent="left_foot"]
@@ -76,13 +86,15 @@ material/0 = null
 
 [node name="right_foot" type="RigidBody" parent="."]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 2, 0, 0 )
+collision_layer = 0
+physics_material_override = SubResource( 6 )
 continuous_cd = true
 contacts_reported = 1
 contact_monitor = true
 can_sleep = false
 script = ExtResource( 2 )
 body_p = NodePath("../../flatscreen_player/body")
-stiffness = 300
+stiffness = 400
 damping = 50
 
 [node name="CollisionShape" type="CollisionShape" parent="right_foot"]

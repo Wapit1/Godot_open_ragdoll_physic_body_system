@@ -10,14 +10,14 @@ height = 2.0
 [sub_resource type="CapsuleMesh" id=2]
 mid_height = 2.0
 
-[sub_resource type="PhysicsMaterial" id=5]
+[sub_resource type="PhysicsMaterial" id=3]
 friction = 9.22337e+18
 rough = true
 
-[sub_resource type="BoxShape" id=3]
+[sub_resource type="BoxShape" id=4]
 extents = Vector3( 1, 0.5, 1 )
 
-[sub_resource type="CubeMesh" id=4]
+[sub_resource type="CubeMesh" id=5]
 size = Vector3( 2, 1, 2 )
 
 [sub_resource type="PhysicsMaterial" id=6]
@@ -38,7 +38,7 @@ axis_lock_angular_x = true
 axis_lock_angular_y = true
 axis_lock_angular_z = true
 script = ExtResource( 3 )
-feet = [ NodePath("../left_foot"), NodePath("../right_foot") ]
+feet = [ NodePath("../left_foot"), NodePath("../left_foot2"), NodePath("../left_foot3"), NodePath("../right_foot"), NodePath("../left_foot5"), NodePath("../left_foot4") ]
 
 [node name="CollisionShape" type="CollisionShape" parent="body"]
 transform = Transform( 1, 0, 0, 0, -1.62921e-07, -1, 0, 1, -1.62921e-07, 0, 0, 0 )
@@ -50,13 +50,13 @@ mesh = SubResource( 2 )
 material/0 = null
 
 [node name="Camera" type="Camera" parent="body"]
-transform = Transform( 1, 0, 0, 0, 0.927817, 0.373036, 0, -0.373036, 0.927817, 0, 4.76601, 10.4938 )
+transform = Transform( 1, 0, 0, 0, 0.927817, 0.373036, 0, -0.373036, 0.927817, 0, 4.76601, 15.3686 )
 current = true
 
 [node name="left_foot" type="RigidBody" parent="."]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -2, 0, 0 )
 collision_layer = 0
-physics_material_override = SubResource( 5 )
+physics_material_override = SubResource( 3 )
 continuous_cd = true
 contacts_reported = 1
 contact_monitor = true
@@ -68,7 +68,7 @@ stiffness = 400
 damping = 50
 
 [node name="CollisionShape" type="CollisionShape" parent="left_foot"]
-shape = SubResource( 3 )
+shape = SubResource( 4 )
 
 [node name="Generic6DOFJoint" type="Generic6DOFJoint" parent="left_foot"]
 nodes/node_a = NodePath("../../body")
@@ -81,7 +81,131 @@ linear_limit_z/enabled = false
 linear_spring_z/enabled = true
 
 [node name="MeshInstance" type="MeshInstance" parent="left_foot"]
-mesh = SubResource( 4 )
+mesh = SubResource( 5 )
+material/0 = null
+
+[node name="left_foot2" type="RigidBody" parent="."]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -2, 0, -5 )
+collision_layer = 0
+physics_material_override = SubResource( 3 )
+continuous_cd = true
+contacts_reported = 1
+contact_monitor = true
+can_sleep = false
+script = ExtResource( 2 )
+body_p = NodePath("../../flatscreen_player/body")
+target_pos = Vector3( 0, 10, 0 )
+stiffness = 400
+damping = 50
+
+[node name="CollisionShape" type="CollisionShape" parent="left_foot2"]
+shape = SubResource( 4 )
+
+[node name="Generic6DOFJoint" type="Generic6DOFJoint" parent="left_foot2"]
+nodes/node_a = NodePath("../../body")
+nodes/node_b = NodePath("..")
+linear_limit_x/enabled = false
+linear_spring_x/enabled = true
+linear_limit_y/enabled = false
+linear_spring_y/enabled = true
+linear_limit_z/enabled = false
+linear_spring_z/enabled = true
+
+[node name="MeshInstance" type="MeshInstance" parent="left_foot2"]
+mesh = SubResource( 5 )
+material/0 = null
+
+[node name="left_foot4" type="RigidBody" parent="."]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 2, 0, 5 )
+collision_layer = 0
+physics_material_override = SubResource( 3 )
+continuous_cd = true
+contacts_reported = 1
+contact_monitor = true
+can_sleep = false
+script = ExtResource( 2 )
+body_p = NodePath("../../flatscreen_player/body")
+target_pos = Vector3( 0, 10, 0 )
+stiffness = 400
+damping = 50
+
+[node name="CollisionShape" type="CollisionShape" parent="left_foot4"]
+shape = SubResource( 4 )
+
+[node name="Generic6DOFJoint" type="Generic6DOFJoint" parent="left_foot4"]
+nodes/node_a = NodePath("../../body")
+nodes/node_b = NodePath("..")
+linear_limit_x/enabled = false
+linear_spring_x/enabled = true
+linear_limit_y/enabled = false
+linear_spring_y/enabled = true
+linear_limit_z/enabled = false
+linear_spring_z/enabled = true
+
+[node name="MeshInstance" type="MeshInstance" parent="left_foot4"]
+mesh = SubResource( 5 )
+material/0 = null
+
+[node name="left_foot5" type="RigidBody" parent="."]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -2, 0, 5 )
+collision_layer = 0
+physics_material_override = SubResource( 3 )
+continuous_cd = true
+contacts_reported = 1
+contact_monitor = true
+can_sleep = false
+script = ExtResource( 2 )
+body_p = NodePath("../../flatscreen_player/body")
+target_pos = Vector3( 0, 10, 0 )
+stiffness = 400
+damping = 50
+
+[node name="CollisionShape" type="CollisionShape" parent="left_foot5"]
+shape = SubResource( 4 )
+
+[node name="Generic6DOFJoint" type="Generic6DOFJoint" parent="left_foot5"]
+nodes/node_a = NodePath("../../body")
+nodes/node_b = NodePath("..")
+linear_limit_x/enabled = false
+linear_spring_x/enabled = true
+linear_limit_y/enabled = false
+linear_spring_y/enabled = true
+linear_limit_z/enabled = false
+linear_spring_z/enabled = true
+
+[node name="MeshInstance" type="MeshInstance" parent="left_foot5"]
+mesh = SubResource( 5 )
+material/0 = null
+
+[node name="left_foot3" type="RigidBody" parent="."]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 2, 0, -5 )
+collision_layer = 0
+physics_material_override = SubResource( 3 )
+continuous_cd = true
+contacts_reported = 1
+contact_monitor = true
+can_sleep = false
+script = ExtResource( 2 )
+body_p = NodePath("../../flatscreen_player/body")
+target_pos = Vector3( 0, 10, 0 )
+stiffness = 400
+damping = 50
+
+[node name="CollisionShape" type="CollisionShape" parent="left_foot3"]
+shape = SubResource( 4 )
+
+[node name="Generic6DOFJoint" type="Generic6DOFJoint" parent="left_foot3"]
+nodes/node_a = NodePath("../../body")
+nodes/node_b = NodePath("..")
+linear_limit_x/enabled = false
+linear_spring_x/enabled = true
+linear_limit_y/enabled = false
+linear_spring_y/enabled = true
+linear_limit_z/enabled = false
+linear_spring_z/enabled = true
+
+[node name="MeshInstance" type="MeshInstance" parent="left_foot3"]
+mesh = SubResource( 5 )
 material/0 = null
 
 [node name="right_foot" type="RigidBody" parent="."]
@@ -98,7 +222,7 @@ stiffness = 400
 damping = 50
 
 [node name="CollisionShape" type="CollisionShape" parent="right_foot"]
-shape = SubResource( 3 )
+shape = SubResource( 4 )
 
 [node name="Generic6DOFJoint" type="Generic6DOFJoint" parent="right_foot"]
 nodes/node_a = NodePath("../../body")
@@ -111,5 +235,5 @@ linear_limit_z/enabled = false
 linear_spring_z/enabled = true
 
 [node name="MeshInstance" type="MeshInstance" parent="right_foot"]
-mesh = SubResource( 4 )
+mesh = SubResource( 5 )
 material/0 = null

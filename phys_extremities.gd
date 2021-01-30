@@ -59,6 +59,7 @@ func grab():
 		var obj = get_colliding_bodies()[0]
 		if obj is StaticBody:
 			mode = MODE_KINEMATIC
+			print("static grabbing")
 		else:
 			var joint := Generic6DOFJoint.new()
 			self.add_child(joint)
@@ -66,11 +67,12 @@ func grab():
 			joint.set_node_a(self.get_path())
 			joint.set_node_b(obj.get_path())
 			grab_joint.append(joint)
+			print("joint grabbing")
 		is_grabbing = true
 		
 #		grab_obj.append(obj)
 		
-		print("grabbing")
+		
 
 func drop():
 	if mode == MODE_KINEMATIC:

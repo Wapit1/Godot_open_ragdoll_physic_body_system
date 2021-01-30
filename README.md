@@ -1,10 +1,8 @@
 # Godot_VR_physic_body
 
-This is to make a bonework/nimsony physic VR body character system
+This is to make a bonework/nimsony physic VR body character system, but also make other active ragdoll game (à la human fall flat, gang beast or totally accurate battle simulator)
 
-it is done the nimsony way which is physics driven (joint between body and hands) instead of bonework kinematic operation and IK
-
-it is currently barely working and as high potential to give motion sickness, so play safe
+it is close to MVP tough as currently an high potential to give motion sickness, so play safe
 
 missing feature:
 

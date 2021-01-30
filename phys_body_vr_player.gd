@@ -58,7 +58,7 @@ func walk():
 					
 					lowering_foot = foot_num
 					foot.target_pos = move + v_h * slam_force  + foot.offset
-					if !foot.is_grabbing :
+					if !foot.is_grabbing && target_height < max_height:
 						foot.grab()
 					
 					if foot_num + 1 < feet.size():

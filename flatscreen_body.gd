@@ -1,6 +1,6 @@
 extends "phys_body_vr_player.gd"
 
-export var test : int
+#export var test : int = 0
 
 func _physics_process(delta):
 	var velocity := Vector3.ZERO

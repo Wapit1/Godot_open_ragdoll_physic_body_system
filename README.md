@@ -8,8 +8,14 @@ it is currently barely working and as high potential to give motion sickness, so
 
 missing feature:
 
-	Better grabbing
+	Better grabbing - current grabbing of rigidbody has a springy joint with offset
 	
-	Have the physic body follow the kinematic body when possible (when not possible either block the player view or snap him back into the physic body)
+	grab point system
 	
-	Have the kinematic body follow the physic body with a smoothed movement and optional FoV vignette
+	hand pose (when we will have an hand model)
+	
+	demo scene for showcase
+		
+	slot based inventory
+
+

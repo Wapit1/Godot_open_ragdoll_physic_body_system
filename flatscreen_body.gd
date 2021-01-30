@@ -13,3 +13,10 @@ func _physics_process(delta):
 	if Input.is_action_pressed('ui_up'):
 		velocity.z -= 1
 	move_direction = velocity.normalized()
+	
+	if Input.is_action_pressed("ui_select"):
+		if target_height > min_height:
+			target_height -= delta* 10
+	elif Input.is_action_just_released("ui_select"):
+		target_height = 20
+		drop_all()

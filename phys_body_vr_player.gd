@@ -1,10 +1,12 @@
 extends RigidBody
 
 var move_direction:= Vector3.ZERO
-var target_height :float = -10
+export var max_height :float = 10
+export var min_height : float = 1
+var target_height :float = 10
 export var feet : Array
-export var slam_force : float = 1.2
-export var num_active_foot : int = 2
+export var slam_force : float = 2
+export var num_active_foot : int = 1
 
 var active_foot_index : Array = []
 var lowering_foot := 3
@@ -23,8 +25,15 @@ func _ready():
 		num_active_foot_to_setup -= 1
 		
 func _physics_process(delta):
+	if target_height > max_height:
+		target_height -= delta* 10
+		
+#	else:
+	walk()
+	
+func walk():
 	var move : Vector3 = move_direction * Vector3(side_step_length, 0, forward_step_length)
-	var v_h = Vector3(0,target_height,0)
+	var v_h = Vector3(0,-target_height,0)
 	var move_h = move + v_h
 	var step_length = move.length()
 	
@@ -60,10 +69,12 @@ func _physics_process(delta):
 			foot.target_pos = -move + v_h * 0.9
 			
 		else:
-			
+			if foot.is_grabbing:
+				foot.drop()
 			foot.target_pos = v_h + foot.offset
 			for i in active_foot_index:
-				i = 3
+				active_foot_index[active_foot_index.find(i)] = feet.size()+1
+#				print(active_foot_index)
 
 	if active_foot_index.has(feet.size()+1) && previous_move != move && previous_move.length() == 0 :
 		print("reset")
@@ -78,7 +89,7 @@ func _physics_process(delta):
 				
 				if !active_foot_index.has(foot_num):
 					
-					if (fartest_foot.transform.origin + move).length() < (foot.transform.origin + move).length():
+					if (fartest_foot.transform.origin - transform.origin+ move).length() < (foot.transform.origin- transform.origin + move).length():
 						fartest_foot = foot
 						print(feet.find(get_path_to(fartest_foot)))
 			active_foot_index[active_foot_index.find(active_foot)] = feet.find(get_path_to(fartest_foot))
@@ -90,3 +101,6 @@ func change_active_foot_index(num):
 	active_foot_index[num] =(active_foot_index[num]+ num_active_foot)% feet.size()
 	
 #	print("swap_new_active_foot_index:" + String(active_foot_index))
+func drop_all():
+	for foot in feet:
+		get_node(foot).drop()

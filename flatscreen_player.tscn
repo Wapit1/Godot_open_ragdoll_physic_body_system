@@ -39,7 +39,6 @@ axis_lock_angular_y = true
 axis_lock_angular_z = true
 script = ExtResource( 3 )
 feet = [ NodePath("../left_foot"), NodePath("../left_foot2"), NodePath("../left_foot3"), NodePath("../right_foot") ]
-num_active_foot = 2
 
 [node name="CollisionShape" type="CollisionShape" parent="body"]
 transform = Transform( 1, 0, 0, 0, -1.62921e-07, -1, 0, 1, -1.62921e-07, 0, 0, 0 )

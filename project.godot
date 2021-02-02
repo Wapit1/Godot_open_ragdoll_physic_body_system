@@ -15,7 +15,7 @@ _global_script_class_icons={
 
 [application]
 
-config/name="physic VR body"
+config/name="Open Physic Body System"
 run/main_scene="res://Game.tscn"
 config/icon="res://icon.png"
 

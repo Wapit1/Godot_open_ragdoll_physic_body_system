@@ -24,6 +24,8 @@ func _ready():
 		active_foot_index.append(feet.size()+1)
 		num_active_foot_to_setup -= 1
 		
+	target_height = max_height +1
+	drop_all()
 func _physics_process(delta):
 	if target_height > max_height:
 		target_height -= delta* 10

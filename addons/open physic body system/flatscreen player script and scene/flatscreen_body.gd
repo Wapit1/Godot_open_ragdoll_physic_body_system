@@ -1,4 +1,4 @@
-extends "phys_body_vr_player.gd"
+extends "hip_base.gd"
 
 #export var test : int = 0
 

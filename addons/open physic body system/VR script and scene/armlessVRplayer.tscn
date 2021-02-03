@@ -1,10 +1,9 @@
-[gd_scene load_steps=19 format=2]
+[gd_scene load_steps=18 format=2]
 
-[ext_resource path="res://armlessVRplayer.gd" type="Script" id=1]
-[ext_resource path="res://phys_extremities.gd" type="Script" id=2]
-[ext_resource path="res://phys_hand_vr.gd" type="Script" id=3]
-[ext_resource path="res://phys_body_vr_player.gd" type="Script" id=4]
-[ext_resource path="res://controller_input_signal_out.gd" type="Script" id=6]
+[ext_resource path="res://addons/open physic body system/VR script and scene/phys_hand_vr.gd" type="Script" id=1]
+[ext_resource path="res://addons/open physic body system/base script/phys_extremities.gd" type="Script" id=2]
+[ext_resource path="res://addons/open physic body system/VR script and scene/controller_input_signal_out.gd" type="Script" id=3]
+[ext_resource path="res://addons/open physic body system/VR script and scene/vr_hip.gd" type="Script" id=4]
 
 [sub_resource type="CubeMesh" id=1]
 size = Vector3( 1, 2, 2 )
@@ -23,13 +22,9 @@ height = 2.0
 [sub_resource type="CapsuleMesh" id=5]
 mid_height = 2.0
 
-[sub_resource type="SphereMesh" id=6]
-radius = 0.2
-height = 0.2
+[sub_resource type="CapsuleShape" id=6]
 
-[sub_resource type="CapsuleShape" id=7]
-radius = 0.2
-height = 0.8
+[sub_resource type="CapsuleMesh" id=7]
 
 [sub_resource type="SphereMesh" id=8]
 radius = 0.2
@@ -62,9 +57,9 @@ continuous_cd = true
 contacts_reported = 10
 contact_monitor = true
 can_sleep = false
-script = ExtResource( 3 )
-body_p = NodePath("../body")
-controller_p = NodePath("../body/armlessVRplayer/ARVROrigin/ARVRController")
+script = ExtResource( 1 )
+body_p = NodePath("../torso")
+controller_p = NodePath("../torso/ARVROrigin/left_controller")
 
 [node name="MeshInstance3" type="MeshInstance" parent="left_hand"]
 mesh = SubResource( 1 )
@@ -79,7 +74,7 @@ mesh = SubResource( 3 )
 material/0 = null
 
 [node name="Generic6DOFJoint" type="Generic6DOFJoint" parent="left_hand"]
-nodes/node_a = NodePath("../../body")
+nodes/node_a = NodePath("../../torso")
 nodes/node_b = NodePath("..")
 linear_limit_x/enabled = false
 linear_spring_x/enabled = true
@@ -98,9 +93,9 @@ continuous_cd = true
 contacts_reported = 10
 contact_monitor = true
 can_sleep = false
-script = ExtResource( 3 )
-body_p = NodePath("../body")
-controller_p = NodePath("../body/armlessVRplayer/ARVROrigin/ARVRController_2")
+script = ExtResource( 1 )
+body_p = NodePath("../torso")
+controller_p = NodePath("../torso/ARVROrigin/right_controller")
 
 [node name="MeshInstance3" type="MeshInstance" parent="right_hand"]
 mesh = SubResource( 1 )
@@ -115,7 +110,7 @@ mesh = SubResource( 3 )
 material/0 = null
 
 [node name="Generic6DOFJoint" type="Generic6DOFJoint" parent="right_hand"]
-nodes/node_a = NodePath("../../body")
+nodes/node_a = NodePath("../../torso")
 nodes/node_b = NodePath("..")
 linear_limit_x/enabled = false
 linear_spring_x/enabled = true
@@ -127,7 +122,7 @@ linear_limit_z/enabled = false
 linear_spring_z/enabled = true
 angular_limit_z/enabled = false
 
-[node name="body" type="RigidBody" parent="."]
+[node name="hip" type="RigidBody" parent="."]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0 )
 collision_layer = 2
 collision_mask = 0
@@ -139,87 +134,83 @@ axis_lock_angular_x = true
 axis_lock_angular_y = true
 axis_lock_angular_z = true
 script = ExtResource( 4 )
-feet = [ NodePath("../left_foot"), NodePath("../right_foot") ]
 
-[node name="CollisionShape" type="CollisionShape" parent="body"]
+[node name="CollisionShape" type="CollisionShape" parent="hip"]
 transform = Transform( 1, 0, 0, 0, -1.62921e-07, -1, 0, 1, -1.62921e-07, 0, 0, 0 )
 shape = SubResource( 4 )
 
-[node name="MeshInstance" type="MeshInstance" parent="body"]
+[node name="MeshInstance" type="MeshInstance" parent="hip"]
 transform = Transform( 1, 0, 0, 0, -1.62921e-07, -1, 0, 1, -1.62921e-07, 0, 0, 0 )
 mesh = SubResource( 5 )
 material/0 = null
 
-[node name="armlessVRplayer" type="KinematicBody" parent="body"]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0 )
-collision_layer = 2
-collision_mask = 0
-script = ExtResource( 1 )
-left_hand_p = NodePath("ARVROrigin/ARVRController")
-right_hand_p = NodePath("ARVROrigin/ARVRController_2")
-bodypath = NodePath("..")
+[node name="torso" type="RigidBody" parent="."]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 5.24126, 0 )
+script = ExtResource( 2 )
+body_p = NodePath("../hip")
+stiffness = 300
+damping = 15
 
-[node name="body_joint" type="Generic6DOFJoint" parent="body/armlessVRplayer"]
-nodes/node_a = NodePath("..")
+[node name="CollisionShape" type="CollisionShape" parent="torso"]
+transform = Transform( 1, 0, 0, 0, -1.62921e-07, -1, 0, 1, -1.62921e-07, 0, 0, 0 )
+shape = SubResource( 6 )
+
+[node name="Generic6DOFJoint" type="Generic6DOFJoint" parent="torso"]
+nodes/node_a = NodePath("../../body")
+nodes/node_b = NodePath("..")
 linear_limit_x/enabled = false
 linear_spring_x/enabled = true
 linear_limit_y/enabled = false
 linear_spring_y/enabled = true
-linear_spring_y/stiffness = 10.0
-linear_spring_y/damping = 1.0
 linear_limit_z/enabled = false
 linear_spring_z/enabled = true
 
-[node name="MeshInstance" type="MeshInstance" parent="body/armlessVRplayer"]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1.5, 0 )
-mesh = SubResource( 6 )
+[node name="MeshInstance" type="MeshInstance" parent="torso"]
+transform = Transform( 1, 0, 0, 0, -1.62921e-07, -1, 0, 1, -1.62921e-07, 0, 0, 0 )
+mesh = SubResource( 7 )
 material/0 = null
 
-[node name="CollisionShape" type="CollisionShape" parent="body/armlessVRplayer"]
-transform = Transform( 1, 0, 0, 0, -1.62921e-07, -1, 0, 1, -1.62921e-07, 0, 0, 0 )
-shape = SubResource( 7 )
-disabled = true
-
-[node name="ARVROrigin" type="ARVROrigin" parent="body/armlessVRplayer"]
+[node name="ARVROrigin" type="ARVROrigin" parent="torso"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -3.74126, 0 )
 world_scale = 10.0
 
-[node name="ARVRCamera" type="ARVRCamera" parent="body/armlessVRplayer/ARVROrigin"]
+[node name="hmd" type="ARVRCamera" parent="torso/ARVROrigin"]
 cull_mask = 31775
 current = true
 
-[node name="MeshInstance" type="MeshInstance" parent="body/armlessVRplayer/ARVROrigin/ARVRCamera"]
+[node name="MeshInstance" type="MeshInstance" parent="torso/ARVROrigin/hmd"]
 layers = 32
 mesh = SubResource( 8 )
 material/0 = null
 
-[node name="MeshInstance2" type="MeshInstance" parent="body/armlessVRplayer/ARVROrigin/ARVRCamera"]
+[node name="MeshInstance2" type="MeshInstance" parent="torso/ARVROrigin/hmd"]
 layers = 32
 mesh = SubResource( 9 )
 material/0 = null
 
-[node name="ARVRController" type="ARVRController" parent="body/armlessVRplayer/ARVROrigin"]
-script = ExtResource( 6 )
+[node name="left_controller" type="ARVRController" parent="torso/ARVROrigin"]
+script = ExtResource( 3 )
 
-[node name="MeshInstance2" type="MeshInstance" parent="body/armlessVRplayer/ARVROrigin/ARVRController"]
+[node name="MeshInstance2" type="MeshInstance" parent="torso/ARVROrigin/left_controller"]
 mesh = SubResource( 10 )
 material/0 = null
 
-[node name="MeshInstance4" type="MeshInstance" parent="body/armlessVRplayer/ARVROrigin/ARVRController"]
+[node name="MeshInstance4" type="MeshInstance" parent="torso/ARVROrigin/left_controller"]
 mesh = SubResource( 3 )
 material/0 = null
 
-[node name="ARVRController_2" type="ARVRController" parent="body/armlessVRplayer/ARVROrigin"]
+[node name="right_controller" type="ARVRController" parent="torso/ARVROrigin"]
 controller_id = 2
-script = ExtResource( 6 )
+script = ExtResource( 3 )
 
-[node name="MeshInstance2" type="MeshInstance" parent="body/armlessVRplayer/ARVROrigin/ARVRController_2"]
+[node name="MeshInstance2" type="MeshInstance" parent="torso/ARVROrigin/right_controller"]
 mesh = SubResource( 11 )
 material/0 = null
 
 [node name="left_foot" type="RigidBody" parent="."]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -2, 0, 0 )
 script = ExtResource( 2 )
-body_p = NodePath("../body")
+body_p = NodePath("../hip")
 stiffness = 300
 damping = 15
 
@@ -243,7 +234,7 @@ material/0 = null
 [node name="right_foot" type="RigidBody" parent="."]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 2, 0, 0 )
 script = ExtResource( 2 )
-body_p = NodePath("../body")
+body_p = NodePath("../hip")
 stiffness = 300
 damping = 15
 

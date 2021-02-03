@@ -30,10 +30,9 @@ func _physics_process(delta):
 	if target_height > max_height:
 		target_height -= delta* 10
 		
-#	else:
-	walk()
+	feet_locomotion()
 	
-func walk():
+func feet_locomotion():
 	var move : Vector3 = move_direction * Vector3(side_step_length, 0, forward_step_length)
 	var v_h = Vector3(0,-target_height,0)
 	var move_h = move + v_h

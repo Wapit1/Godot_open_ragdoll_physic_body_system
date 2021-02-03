@@ -1,7 +1,11 @@
 [gd_scene load_steps=9 format=2]
 
-[ext_resource path="res://phys_extremities.gd" type="Script" id=2]
-[ext_resource path="res://flatscreen_body.gd" type="Script" id=3]
+[ext_resource path="res://addons/open physic body system/base script/phys_extremities.gd" type="Script" id=2]
+[ext_resource path="res://addons/open physic body system/flatscreen player script and scene/flatscreen_body.gd" type="Script" id=3]
+
+
+
+
 
 [sub_resource type="CapsuleShape" id=1]
 margin = 0.001

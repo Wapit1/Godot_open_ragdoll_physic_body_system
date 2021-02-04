@@ -6,6 +6,8 @@ extends RigidBody
 export var body_p : NodePath 
 onready var body : RigidBody = get_node(body_p)
 
+export var is_stable : bool = false
+
 var is_grabbing := false
 var grab_obj := []
 var grab_joint := []
@@ -32,8 +34,7 @@ export var max_length := Vector3.INF
 export var stiffness := 100
 export var damping := 5
 
-
-export var offset : Vector3 = Vector3(0,-1,0)
+var offset := Vector3.ZERO
 
 func _ready():
 	if pos_joint != null:
@@ -85,7 +86,10 @@ func drop():
 
 func _physics_process(delta):
 			#position
-			target_pos += offset
+			if !is_stable:
+				target_pos += offset
+			
+			
 			pos_joint.set("linear_spring_x/equilibrium_point", clamp(target_pos.x,-max_length.x, max_length.x))
 			pos_joint.set("linear_spring_y/equilibrium_point", clamp(target_pos.y,-max_length.y, max_length.y))
 			pos_joint.set("linear_spring_z/equilibrium_point", clamp(target_pos.z,-max_length.z, max_length.z))

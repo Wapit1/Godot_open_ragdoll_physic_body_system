@@ -1,4 +1,4 @@
-extends "phys_extremities.gd"
+extends "../base script/phys_extremities.gd"
 
 
 export var controller_p : NodePath

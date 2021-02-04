@@ -1,4 +1,4 @@
-extends "hip_base.gd"
+extends "../base script/hip_base.gd"
 
 #export var test : int = 0
 

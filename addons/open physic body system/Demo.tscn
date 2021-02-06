@@ -35,9 +35,6 @@ extents = Vector3( 0.1, 0.1, 0.1 )
 
 [node name="game" type="Spatial"]
 
-[node name="armlessVRplayer" parent="." instance=ExtResource( 1 )]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 5.20501, 0 )
-
 [node name="loading" type="Spatial" parent="."]
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
@@ -595,3 +592,6 @@ material/0 = null
 
 [node name="CollisionShape" type="CollisionShape" parent="rigidbodies/RigidBody4"]
 shape = SubResource( 9 )
+
+[node name="armlessVRplayer" parent="." instance=ExtResource( 1 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -86.4674, 6.28041, 66.1317 )

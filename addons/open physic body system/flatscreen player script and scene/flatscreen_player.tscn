@@ -1,5 +1,6 @@
-[gd_scene load_steps=11 format=2]
+[gd_scene load_steps=12 format=2]
 
+[ext_resource path="res://addons/open physic body system/base script/Stabilize_cam.gd" type="Script" id=1]
 [ext_resource path="res://addons/open physic body system/base script/phys_extremities.gd" type="Script" id=2]
 [ext_resource path="res://addons/open physic body system/flatscreen player script and scene/flatscreen_body.gd" type="Script" id=3]
 
@@ -42,7 +43,7 @@ axis_lock_angular_x = true
 axis_lock_angular_y = true
 axis_lock_angular_z = true
 script = ExtResource( 3 )
-feet = [ NodePath("../left_foot"), NodePath("../left_foot2"), NodePath("../left_foot3"), NodePath("../right_foot") ]
+feet = [ NodePath("../left_foot"), NodePath("../right_foot") ]
 slam_force = 1.0
 
 [node name="CollisionShape" type="CollisionShape" parent="body"]
@@ -87,17 +88,17 @@ material/0 = null
 [node name="torso" type="RigidBody" parent="."]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0119298, 5.56111, 0 )
 collision_layer = 0
-mass = 0.1
-physics_material_override = SubResource( 3 )
+mass = 10.0
+gravity_scale = 0.0
 continuous_cd = true
 contacts_reported = 1
 contact_monitor = true
 can_sleep = false
 script = ExtResource( 2 )
-body_p = NodePath("../../flatscreen_player/body")
+body_p = NodePath("../body")
 is_stable = true
-stiffness = 5
-damping = 10
+stiffness = 300
+damping = 50
 
 [node name="CollisionShape" type="CollisionShape" parent="torso"]
 transform = Transform( 1, 0, 0, 0, -1.62921e-07, -1, 0, 1, -1.62921e-07, 0, 0, 0 )
@@ -116,70 +117,6 @@ linear_spring_z/enabled = true
 [node name="MeshInstance" type="MeshInstance" parent="torso"]
 transform = Transform( 1, 0, 0, 0, -1.62921e-07, -1, 0, 1, -1.62921e-07, 0, 0, 0 )
 mesh = SubResource( 7 )
-material/0 = null
-
-[node name="Camera" type="Camera" parent="torso"]
-transform = Transform( 1, 0, 0, 0, 0.927817, 0.373036, 0, -0.373036, 0.927817, -0.0119298, 0.204904, 15.3686 )
-current = true
-
-[node name="left_foot2" type="RigidBody" parent="."]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 2, 0, 5 )
-collision_layer = 0
-physics_material_override = SubResource( 3 )
-continuous_cd = true
-contacts_reported = 1
-contact_monitor = true
-can_sleep = false
-script = ExtResource( 2 )
-body_p = NodePath("../../flatscreen_player/body")
-stiffness = 400
-damping = 50
-
-[node name="CollisionShape" type="CollisionShape" parent="left_foot2"]
-shape = SubResource( 4 )
-
-[node name="Generic6DOFJoint" type="Generic6DOFJoint" parent="left_foot2"]
-nodes/node_a = NodePath("../../body")
-nodes/node_b = NodePath("..")
-linear_limit_x/enabled = false
-linear_spring_x/enabled = true
-linear_limit_y/enabled = false
-linear_spring_y/enabled = true
-linear_limit_z/enabled = false
-linear_spring_z/enabled = true
-
-[node name="MeshInstance" type="MeshInstance" parent="left_foot2"]
-mesh = SubResource( 5 )
-material/0 = null
-
-[node name="left_foot3" type="RigidBody" parent="."]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -2, 0, 5 )
-collision_layer = 0
-physics_material_override = SubResource( 3 )
-continuous_cd = true
-contacts_reported = 1
-contact_monitor = true
-can_sleep = false
-script = ExtResource( 2 )
-body_p = NodePath("../../flatscreen_player/body")
-stiffness = 400
-damping = 50
-
-[node name="CollisionShape" type="CollisionShape" parent="left_foot3"]
-shape = SubResource( 4 )
-
-[node name="Generic6DOFJoint" type="Generic6DOFJoint" parent="left_foot3"]
-nodes/node_a = NodePath("../../body")
-nodes/node_b = NodePath("..")
-linear_limit_x/enabled = false
-linear_spring_x/enabled = true
-linear_limit_y/enabled = false
-linear_spring_y/enabled = true
-linear_limit_z/enabled = false
-linear_spring_z/enabled = true
-
-[node name="MeshInstance" type="MeshInstance" parent="left_foot3"]
-mesh = SubResource( 5 )
 material/0 = null
 
 [node name="right_foot" type="RigidBody" parent="."]
@@ -211,3 +148,11 @@ linear_spring_z/enabled = true
 [node name="MeshInstance" type="MeshInstance" parent="right_foot"]
 mesh = SubResource( 5 )
 material/0 = null
+
+[node name="Camera" type="Camera" parent="."]
+transform = Transform( 1, 0, 0, 0, 0.927817, 0.373036, 0, -0.373036, 0.927817, 0, 7.85336, 18.2932 )
+current = true
+far = 8192.0
+script = ExtResource( 1 )
+track_spatial_p = NodePath("../torso")
+num_of_average_pos = 40

@@ -112,7 +112,7 @@ func change_active_feet_index(num):
 	
 	get_node(feet[active_feet_index[num]]).drop()
 	
-	print("swap_new_active_feet_index:" + String(active_feet_index))
+#	print("swap_new_active_feet_index:" + String(active_feet_index))
 func drop_all():
 	for foot in feet:
 		get_node(foot).drop()

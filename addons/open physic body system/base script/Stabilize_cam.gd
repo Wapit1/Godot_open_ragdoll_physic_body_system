@@ -1,0 +1,37 @@
+extends Spatial
+
+export var track_spatial_p : NodePath
+onready var track_spatial := get_node(track_spatial_p)
+
+
+# for eventually have instant reaction
+#export var movement_hip_p : NodePath
+#onready var move_source := get_node(movement_hip_p)
+
+var average_pos_array : Array = []
+export var num_of_average_pos : int = 50
+
+onready var offset :Vector3 = global_transform.origin - track_spatial.global_transform.origin 
+
+
+func _ready():
+	var num_to_setup = num_of_average_pos
+	while num_to_setup > 0:
+		average_pos_array.append(global_transform.origin)
+		num_to_setup -= 1
+func _physics_process(delta):
+#		print(global_transform.origin)
+		var track_pos = track_spatial.global_transform.origin
+		average_pos_array.remove(0)
+		average_pos_array.append(track_pos + offset)
+		
+		var target_pos := Vector3.ZERO
+		
+		for pos in average_pos_array:
+			target_pos += pos
+		
+		target_pos = target_pos / average_pos_array.size()
+		
+		global_transform.origin = target_pos
+		
+		

@@ -6,11 +6,13 @@ onready var left_controller : Spatial = arvr_origin.get_node("left_controller")
 onready var right_controller : Spatial = arvr_origin.get_node("right_controller")
 onready var hmd : Spatial = arvr_origin.get_node("hmd")
 
-export var vertical_speed : float = 5
+export var vertical_speed : float = 3
 
-# for when the body will follow the player
-#var height_offset
+export var stabilizing_sphere_p : NodePath
+onready var stabilizing_sphere :Spatial = get_node(stabilizing_sphere_p)
 
+
+var snap_turn_dir : int = 0
 
 func _ready():
 	
@@ -33,24 +35,45 @@ func _physics_process(delta):
 		var cam_xform = hmd.get_global_transform()
 
 		if left_controller.axis[1] > 0.5 :
-			dir += - cam_xform.basis.z 
+			dir +=  Vector3.FORWARD
 		elif left_controller.axis[1] < -0.5 :
-			dir += cam_xform.basis.z 
+			dir +=  - Vector3.FORWARD
 
 		if left_controller.axis[0] < -0.5 :
-			dir += - cam_xform.basis.x 
+			dir += - Vector3.RIGHT
 		elif left_controller.axis[0] > 0.5 :
-			dir += cam_xform.basis.x 
-
+			dir += Vector3.RIGHT
+		
+		
+		
 		dir = dir.normalized()
 #		vel = dir * speed * delta
 		if right_controller.axis[1] < -0.5 :
-			target_height += 1 * delta * vertical_speed
-#			height_offset += -1 * delta * vertical_speed
+#			target_height -= 1 * delta * vertical_speed
+			height_offset -= 1 * delta * vertical_speed
 		elif right_controller.axis[1] > 0.5 :
-			target_height -= 1 * delta * vertical_speed
-#			height_offset += 1 * delta * vertical_speed
-
-
+#			target_height += 1 * delta * vertical_speed
+			height_offset += 1 * delta * vertical_speed
+		
+#		movement through the base hip script
+		target_height = hmd.global_transform.origin.y + height_offset - global_transform.origin.y
 		move_direction = dir
 		
+		stabilizing_sphere.target_pos = Vector3(0,-target_height,0)
+		if move_direction.length() > 0:
+			stabilizing_sphere.is_stabilizing_rotation = false
+		else:
+#			for bracking
+			stabilizing_sphere.is_stabilizing_rotation = true
+		
+		
+#		snap turning
+		if round(right_controller.axis[0]) != 0 :
+			if right_controller.axis[0] > -0.75 && snap_turn_dir != 1 :
+				rotate_y(-TAU/8)
+				snap_turn_dir = 1
+			elif right_controller.axis[0] < 0.75 && snap_turn_dir != 2:
+				rotate_y(TAU/8)
+				snap_turn_dir = 2
+		else:
+			snap_turn_dir = 0

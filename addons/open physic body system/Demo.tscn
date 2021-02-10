@@ -5,14 +5,14 @@
 [ext_resource path="res://addons/open physic body system/default_env.tres" type="Environment" id=3]
 
 [sub_resource type="BoxShape" id=1]
-extents = Vector3( 200, 1, 200 )
+extents = Vector3( 500, 1, 500 )
 
 [sub_resource type="SpatialMaterial" id=2]
 albedo_color = Color( 0.67451, 0.701961, 0.933333, 1 )
 
 [sub_resource type="CubeMesh" id=3]
 material = SubResource( 2 )
-size = Vector3( 400, 2, 400 )
+size = Vector3( 1000, 2, 1000 )
 
 [sub_resource type="BoxShape" id=4]
 extents = Vector3( 2, 2, 2 )

@@ -17,6 +17,8 @@ export var target_basis : Basis
 
 onready var pos_joint : Generic6DOFJoint = get_node("Generic6DOFJoint")
 
+export var is_stabilizing_rotation : bool = true
+
 export var PID_to_zero := Vector3(2,0,0) 
 var last_error_z := Vector3.ZERO
 var integral_z   := Vector3.ZERO
@@ -96,28 +98,28 @@ func _physics_process(delta):
 			
 #			print(target_pos)
 			#rotation
-			
-			#restore angular velocity to 0
-			var correction_to_zero = PID(-angular_velocity,delta,0)
-			add_torque(correction_to_zero)
-			#rotation
-			var error_target :Vector3 = - target_basis.z.cross(transform.basis.z)
-			var correction_to_target = PID(error_target,delta,1)
-			add_torque(correction_to_target)
-			#roll
-			var error_roll : Vector3 
-			var cross_p_roll :Vector3 = target_basis.x.cross(transform.basis.x)
-			if target_basis.x.x > 0 && target_basis.y.y > 0 || target_basis.z.z > 0:
-				if cross_p_roll.z >= 0 :
-					error_roll = transform.basis.z * - cross_p_roll.length()
+			if is_stabilizing_rotation:
+				#restore angular velocity to 0
+				var correction_to_zero = PID(-angular_velocity,delta,0)
+				add_torque(correction_to_zero)
+				#rotation
+				var error_target :Vector3 = - target_basis.z.cross(transform.basis.z)
+				var correction_to_target = PID(error_target,delta,1)
+				add_torque(correction_to_target)
+				#roll
+				var error_roll : Vector3 
+				var cross_p_roll :Vector3 = target_basis.x.cross(transform.basis.x)
+				if target_basis.x.x > 0 && target_basis.y.y > 0 || target_basis.z.z > 0:
+					if cross_p_roll.z >= 0 :
+						error_roll = transform.basis.z * - cross_p_roll.length()
+					else:
+						error_roll = transform.basis.z *  cross_p_roll.length()
 				else:
-					error_roll = transform.basis.z *  cross_p_roll.length()
-			else:
-				if cross_p_roll.z >= 0 :
-					error_roll = transform.basis.z * cross_p_roll.length()
-				else:
-					error_roll = transform.basis.z * - cross_p_roll.length()
-			add_torque(PID(error_roll,delta,2))
+					if cross_p_roll.z >= 0 :
+						error_roll = transform.basis.z * cross_p_roll.length()
+					else:
+						error_roll = transform.basis.z * - cross_p_roll.length()
+				add_torque(PID(error_roll,delta,2))
 
 
 

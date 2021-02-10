@@ -4,6 +4,8 @@ var move_direction:= Vector3.ZERO
 export var max_height :float = 10
 export var min_height : float = 5
 var target_height :float = 10
+var height_offset : float = 0
+
 export var feet : Array
 export var slam_force : float = 2
 export var num_simultanous_active_foot : int = 1
@@ -11,13 +13,16 @@ export var num_simultanous_active_foot : int = 1
 var active_feet_index : Array = []
 var lowering_feet_index : Array = []
 
-
+var upper_body_parts : Array = []
 
 var previous_move : = Vector3.ZERO
 
 export var forward_step_length : float = 5
 #export var backward_step_length : float = 2
 export var side_step_length : float = 4
+export var step_length_divider : float = 10
+
+var is_using_basic_locomotion :bool = true
 
 func _ready():
 	var num_simultanous_active_foot_to_setup = num_simultanous_active_foot
@@ -33,11 +38,15 @@ func _physics_process(delta):
 	elif target_height < min_height:
 		target_height += delta* 10
 	
-	feet_locomotion()
+	
+	if is_using_basic_locomotion:
+		feet_locomotion()
 	
 func feet_locomotion():
-	var move : Vector3 = move_direction * Vector3(side_step_length, 0, forward_step_length)
+	var move : Vector3 = move_direction * Vector3(side_step_length, 0, forward_step_length) * target_height / step_length_divider
 	var v_h = Vector3(0,-target_height,0)
+	
+	
 	var move_h = move + v_h
 	var step_length = move.length()
 	
@@ -45,8 +54,10 @@ func feet_locomotion():
 		var foot = get_node(foot_p)
 		var foot_num = feet.find(foot_p)
 		
+		var foot_offset_zx = Vector3(foot.offset.x,0,foot.offset.z)
+		
 		if foot.is_grabbing && move.length() > 0:
-			foot.target_pos = - move + v_h + foot.offset
+			foot.target_pos = - move + v_h + foot_offset_zx
 			
 			if lowering_feet_index.has(foot_num):
 				lowering_feet_index.erase(foot_num)
@@ -55,7 +66,7 @@ func feet_locomotion():
 
 		elif (active_feet_index.has(foot_num)  || lowering_feet_index.has(foot_num) )&& move.length() > 0 :
 			
-				foot.target_pos = move + v_h/step_length + foot.offset
+				foot.target_pos = move + v_h/step_length + foot_offset_zx
 				
 				if   lowering_feet_index.has(foot_num) \
 				 || ((foot.transform.origin - transform.origin)+ move).length() > 0 \
@@ -63,7 +74,7 @@ func feet_locomotion():
 					
 					if  !lowering_feet_index.has(foot_num):
 						lowering_feet_index.append(foot_num) 
-					foot.target_pos = move + v_h * slam_force  + foot.offset
+					foot.target_pos = move + v_h * slam_force  + foot_offset_zx
 					if !foot.is_grabbing && target_height < max_height:
 						foot.grab()
 					
@@ -75,7 +86,7 @@ func feet_locomotion():
 		else:
 			if foot.is_grabbing:
 				foot.drop()
-			foot.target_pos = v_h + foot.offset
+			foot.target_pos = v_h + foot_offset_zx
 			for i in active_feet_index:
 				active_feet_index[active_feet_index.find(i)] = feet.size()+1
 #				print(active_feet_index)

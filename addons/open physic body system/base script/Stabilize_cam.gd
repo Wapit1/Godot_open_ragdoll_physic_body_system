@@ -4,9 +4,9 @@ export var track_spatial_p : NodePath
 onready var track_spatial := get_node(track_spatial_p)
 
 
-# for eventually have instant reaction
-#export var movement_hip_p : NodePath
-#onready var move_source := get_node(movement_hip_p)
+
+export var movement_hip_p : NodePath
+onready var hip := get_node(movement_hip_p)
 
 var average_pos_array : Array = []
 export var num_of_average_pos : int = 50
@@ -20,10 +20,12 @@ func _ready():
 		average_pos_array.append(global_transform.origin)
 		num_to_setup -= 1
 func _physics_process(delta):
-#		print(global_transform.origin)
+#		print(global_transform.origin- track_spatial.transform.origin)
+		
+		var height_offset = hip.height_offset
 		var track_pos = track_spatial.global_transform.origin
 		average_pos_array.remove(0)
-		average_pos_array.append(track_pos + offset)
+		average_pos_array.append(track_pos + offset + Vector3(0,height_offset,0))
 		
 		var target_pos := Vector3.ZERO
 		

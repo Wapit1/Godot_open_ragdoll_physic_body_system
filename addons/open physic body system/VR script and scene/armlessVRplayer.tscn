@@ -1,4 +1,4 @@
-[gd_scene load_steps=19 format=2]
+[gd_scene load_steps=22 format=2]
 
 [ext_resource path="res://addons/open physic body system/VR script and scene/phys_hand_vr.gd" type="Script" id=1]
 [ext_resource path="res://addons/open physic body system/base script/phys_extremities.gd" type="Script" id=2]
@@ -16,22 +16,25 @@ extents = Vector3( 0.5, 1, 1 )
 radius = 0.1
 mid_height = 2.5
 
-[sub_resource type="CapsuleShape" id=4]
-margin = 0.001
-height = 2.0
+[sub_resource type="SphereShape" id=14]
 
-[sub_resource type="CapsuleMesh" id=5]
-mid_height = 2.0
+[sub_resource type="SphereMesh" id=15]
 
-[sub_resource type="CapsuleShape" id=6]
+[sub_resource type="SphereShape" id=16]
 
-[sub_resource type="CapsuleMesh" id=7]
+[sub_resource type="SphereMesh" id=17]
 
 [sub_resource type="BoxShape" id=8]
 extents = Vector3( 1, 0.5, 1 )
 
 [sub_resource type="CubeMesh" id=9]
 size = Vector3( 2, 1, 2 )
+
+[sub_resource type="PhysicsMaterial" id=20]
+
+[sub_resource type="SphereShape" id=18]
+
+[sub_resource type="SphereMesh" id=19]
 
 [sub_resource type="SphereMesh" id=10]
 radius = 0.2
@@ -126,7 +129,7 @@ linear_spring_z/enabled = true
 angular_limit_z/enabled = false
 
 [node name="hip" type="RigidBody" parent="."]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0 )
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 5, 0 )
 collision_layer = 2
 collision_mask = 0
 mass = 5.0
@@ -140,18 +143,19 @@ script = ExtResource( 4 )
 feet = [ NodePath("../left_foot"), NodePath("../right_foot") ]
 slam_force = 1.0
 arvr_origin_p = NodePath("../ARVROrigin")
+stabilizing_sphere_p = NodePath("../stabilizing_sphere")
 
 [node name="CollisionShape" type="CollisionShape" parent="hip"]
 transform = Transform( 1, 0, 0, 0, -1.62921e-07, -1, 0, 1, -1.62921e-07, 0, 0, 0 )
-shape = SubResource( 4 )
+shape = SubResource( 14 )
 
 [node name="MeshInstance" type="MeshInstance" parent="hip"]
 transform = Transform( 1, 0, 0, 0, -1.62921e-07, -1, 0, 1, -1.62921e-07, 0, 0, 0 )
-mesh = SubResource( 5 )
+mesh = SubResource( 15 )
 material/0 = null
 
 [node name="torso" type="RigidBody" parent="."]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 5, 0 )
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 10, 0 )
 mass = 10.0
 continuous_cd = true
 contacts_reported = 2
@@ -159,12 +163,12 @@ contact_monitor = true
 script = ExtResource( 2 )
 body_p = NodePath("../hip")
 is_stable = true
-stiffness = 300
+stiffness = 500
 damping = 50
 
 [node name="CollisionShape" type="CollisionShape" parent="torso"]
 transform = Transform( 1, 0, 0, 0, -1.62921e-07, -1, 0, 1, -1.62921e-07, 0, 0, 0 )
-shape = SubResource( 6 )
+shape = SubResource( 16 )
 
 [node name="Generic6DOFJoint" type="Generic6DOFJoint" parent="torso"]
 nodes/node_a = NodePath("../../hip")
@@ -181,11 +185,11 @@ linear_spring_z/enabled = true
 
 [node name="MeshInstance" type="MeshInstance" parent="torso"]
 transform = Transform( 1, 0, 0, 0, -1.62921e-07, -1, 0, 1, -1.62921e-07, 0, 0, 0 )
-mesh = SubResource( 7 )
+mesh = SubResource( 17 )
 material/0 = null
 
 [node name="left_foot" type="RigidBody" parent="."]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -2, 0, 0 )
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -2, 0.5, 0 )
 collision_layer = 0
 continuous_cd = true
 contacts_reported = 1
@@ -193,7 +197,7 @@ contact_monitor = true
 script = ExtResource( 2 )
 body_p = NodePath("../hip")
 stiffness = 400
-damping = 50
+damping = 20
 
 [node name="CollisionShape" type="CollisionShape" parent="left_foot"]
 shape = SubResource( 8 )
@@ -213,7 +217,7 @@ mesh = SubResource( 9 )
 material/0 = null
 
 [node name="right_foot" type="RigidBody" parent="."]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 2, 0, 0 )
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 2, 0.5, 0 )
 collision_layer = 0
 continuous_cd = true
 contacts_reported = 1
@@ -221,7 +225,7 @@ contact_monitor = true
 script = ExtResource( 2 )
 body_p = NodePath("../hip")
 stiffness = 400
-damping = 50
+damping = 20
 
 [node name="CollisionShape" type="CollisionShape" parent="right_foot"]
 shape = SubResource( 8 )
@@ -240,11 +244,42 @@ linear_spring_z/enabled = true
 mesh = SubResource( 9 )
 material/0 = null
 
+[node name="stabilizing_sphere" type="RigidBody" parent="."]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0 )
+collision_layer = 0
+physics_material_override = SubResource( 20 )
+continuous_cd = true
+contacts_reported = 1
+contact_monitor = true
+script = ExtResource( 2 )
+body_p = NodePath("../hip")
+is_stabilizing_rotation = false
+stiffness = 400
+damping = 50
+
+[node name="CollisionShape" type="CollisionShape" parent="stabilizing_sphere"]
+shape = SubResource( 18 )
+
+[node name="Generic6DOFJoint" type="Generic6DOFJoint" parent="stabilizing_sphere"]
+nodes/node_a = NodePath("../../hip")
+nodes/node_b = NodePath("..")
+linear_limit_x/enabled = false
+linear_spring_x/enabled = true
+linear_limit_y/enabled = false
+linear_spring_y/enabled = true
+linear_limit_z/enabled = false
+linear_spring_z/enabled = true
+
+[node name="MeshInstance" type="MeshInstance" parent="stabilizing_sphere"]
+mesh = SubResource( 19 )
+material/0 = null
+
 [node name="ARVROrigin" type="ARVROrigin" parent="."]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 5, 0 )
 world_scale = 10.0
 script = ExtResource( 5 )
 track_spatial_p = NodePath("../torso")
-num_of_average_pos = 40
+movement_hip_p = NodePath("../hip")
 
 [node name="hmd" type="ARVRCamera" parent="ARVROrigin"]
 cull_mask = 31775

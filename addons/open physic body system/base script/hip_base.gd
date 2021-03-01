@@ -4,7 +4,7 @@ var move_direction:= Vector3.ZERO
 export var max_height :float = 10
 export var min_height : float = 5
 var target_height :float = 10
-var height_offset : float = 0
+var height_offset = 0
 
 export var feet : Array
 export var slam_force : float = 2
@@ -22,7 +22,12 @@ export var forward_step_length : float = 5
 export var side_step_length : float = 4
 export var step_length_divider : float = 10
 
-var is_using_basic_locomotion :bool = true
+export var is_using_basic_locomotion :bool = false
+export var is_using_sphere_locomotion : bool = true
+export var is_feet_just_for_show := true
+
+export var stabilizing_sphere_p : NodePath
+onready var stabilizing_sphere :Spatial = get_node(stabilizing_sphere_p)
 
 func _ready():
 	var num_simultanous_active_foot_to_setup = num_simultanous_active_foot
@@ -33,15 +38,28 @@ func _ready():
 	target_height = max_height +0.1
 	drop_all()
 func _physics_process(delta):
-	if target_height > max_height:
-		target_height -= delta* 10
-	elif target_height < min_height:
-		target_height += delta* 10
-	
-	
+
 	if is_using_basic_locomotion:
 		feet_locomotion()
+	else:
+		for foot_p in feet:
+			var foot = get_node(foot_p)
+			foot.target_pos = foot.offset + Vector3(0,target_height/2,0)
 	
+	if is_using_sphere_locomotion:
+		sphere_locomotion()
+	
+func sphere_locomotion():
+		stabilizing_sphere.target_pos = Vector3(0,-target_height,0)
+		if move_direction.length() > 0:
+			stabilizing_sphere.is_stabilizing_rotation = false
+			stabilizing_sphere.target_rot = move_direction.rotated(Vector3.UP,PI/2)*30
+		else:
+#			for bracking
+			stabilizing_sphere.target_rot = Vector3.ZERO
+			stabilizing_sphere.is_stabilizing_rotation = true
+			
+			
 func feet_locomotion():
 	var move : Vector3 = move_direction * Vector3(side_step_length, 0, forward_step_length) * target_height / step_length_divider
 	var v_h = Vector3(0,-target_height,0)
@@ -56,7 +74,7 @@ func feet_locomotion():
 		
 		var foot_offset_zx = Vector3(foot.offset.x,0,foot.offset.z)
 		
-		if foot.is_grabbing && move.length() > 0:
+		if (foot.is_grabbing|| (foot.get_colliding_bodies().size() > 0 && is_feet_just_for_show)) && move.length() > 0:
 			foot.target_pos = - move + v_h + foot_offset_zx
 			
 			if lowering_feet_index.has(foot_num):
@@ -75,7 +93,7 @@ func feet_locomotion():
 					if  !lowering_feet_index.has(foot_num):
 						lowering_feet_index.append(foot_num) 
 					foot.target_pos = move + v_h * slam_force  + foot_offset_zx
-					if !foot.is_grabbing && target_height < max_height:
+					if !foot.is_grabbing && target_height < max_height && !is_feet_just_for_show:
 						foot.grab()
 					
 					

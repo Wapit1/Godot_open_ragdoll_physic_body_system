@@ -1,8 +1,9 @@
-[gd_scene load_steps=12 format=2]
+[gd_scene load_steps=16 format=2]
 
 [ext_resource path="res://addons/open physic body system/base script/Stabilize_cam.gd" type="Script" id=1]
 [ext_resource path="res://addons/open physic body system/base script/phys_extremities.gd" type="Script" id=2]
 [ext_resource path="res://addons/open physic body system/flatscreen player script and scene/flatscreen_body.gd" type="Script" id=3]
+[ext_resource path="res://addons/open physic body system/flatscreen player script and scene/stabilizing_sphere.gd" type="Script" id=4]
 
 [sub_resource type="CapsuleShape" id=1]
 margin = 0.001
@@ -29,9 +30,17 @@ size = Vector3( 2, 1, 2 )
 friction = 9.22337e+18
 rough = true
 
+[sub_resource type="PhysicsMaterial" id=11]
+friction = 9.22337e+18
+rough = true
+
+[sub_resource type="SphereShape" id=9]
+
+[sub_resource type="SphereMesh" id=10]
+
 [node name="flatscreen_player" type="Spatial"]
 
-[node name="body" type="RigidBody" parent="."]
+[node name="hip" type="RigidBody" parent="."]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0 )
 collision_layer = 2
 collision_mask = 0
@@ -45,12 +54,13 @@ axis_lock_angular_z = true
 script = ExtResource( 3 )
 feet = [ NodePath("../left_foot"), NodePath("../right_foot") ]
 slam_force = 1.0
+stabilizing_sphere_p = NodePath("../stabilizing_sphere")
 
-[node name="CollisionShape" type="CollisionShape" parent="body"]
+[node name="CollisionShape" type="CollisionShape" parent="hip"]
 transform = Transform( 1, 0, 0, 0, -1.62921e-07, -1, 0, 1, -1.62921e-07, 0, 0, 0 )
 shape = SubResource( 1 )
 
-[node name="MeshInstance" type="MeshInstance" parent="body"]
+[node name="MeshInstance" type="MeshInstance" parent="hip"]
 transform = Transform( 1, 0, 0, 0, -1.62921e-07, -1, 0, 1, -1.62921e-07, 0, 0, 0 )
 mesh = SubResource( 2 )
 material/0 = null
@@ -64,7 +74,7 @@ contacts_reported = 1
 contact_monitor = true
 can_sleep = false
 script = ExtResource( 2 )
-body_p = NodePath("../../flatscreen_player/body")
+body_p = NodePath("../hip")
 stiffness = 400
 damping = 50
 
@@ -72,7 +82,7 @@ damping = 50
 shape = SubResource( 4 )
 
 [node name="Generic6DOFJoint" type="Generic6DOFJoint" parent="left_foot"]
-nodes/node_a = NodePath("../../body")
+nodes/node_a = NodePath("../../hip")
 nodes/node_b = NodePath("..")
 linear_limit_x/enabled = false
 linear_spring_x/enabled = true
@@ -95,17 +105,16 @@ contacts_reported = 1
 contact_monitor = true
 can_sleep = false
 script = ExtResource( 2 )
-body_p = NodePath("../body")
+body_p = NodePath("../hip")
 is_stable = true
 stiffness = 300
-damping = 50
 
 [node name="CollisionShape" type="CollisionShape" parent="torso"]
 transform = Transform( 1, 0, 0, 0, -1.62921e-07, -1, 0, 1, -1.62921e-07, 0, 0, 0 )
 shape = SubResource( 6 )
 
 [node name="Generic6DOFJoint" type="Generic6DOFJoint" parent="torso"]
-nodes/node_a = NodePath("../../body")
+nodes/node_a = NodePath("../../hip")
 nodes/node_b = NodePath("..")
 linear_limit_x/enabled = false
 linear_spring_x/enabled = true
@@ -128,7 +137,7 @@ contacts_reported = 1
 contact_monitor = true
 can_sleep = false
 script = ExtResource( 2 )
-body_p = NodePath("../../flatscreen_player/body")
+body_p = NodePath("../hip")
 stiffness = 400
 damping = 50
 
@@ -136,7 +145,7 @@ damping = 50
 shape = SubResource( 4 )
 
 [node name="Generic6DOFJoint" type="Generic6DOFJoint" parent="right_foot"]
-nodes/node_a = NodePath("../../body")
+nodes/node_a = NodePath("../../hip")
 nodes/node_b = NodePath("..")
 linear_limit_x/enabled = false
 linear_spring_x/enabled = true
@@ -155,4 +164,33 @@ current = true
 far = 8192.0
 script = ExtResource( 1 )
 track_spatial_p = NodePath("../torso")
+movement_hip_p = NodePath("../hip")
 num_of_average_pos = 40
+
+[node name="stabilizing_sphere" type="RigidBody" parent="."]
+collision_mask = 0
+physics_material_override = SubResource( 11 )
+script = ExtResource( 4 )
+body_p = NodePath("../hip")
+stiffness = 400
+damping = 15
+
+[node name="CollisionShape" type="CollisionShape" parent="stabilizing_sphere"]
+shape = SubResource( 9 )
+
+[node name="MeshInstance" type="MeshInstance" parent="stabilizing_sphere"]
+mesh = SubResource( 10 )
+material/0 = null
+
+[node name="Generic6DOFJoint" type="Generic6DOFJoint" parent="stabilizing_sphere"]
+nodes/node_a = NodePath("../../hip")
+nodes/node_b = NodePath("..")
+linear_limit_x/enabled = false
+linear_spring_x/enabled = true
+angular_limit_x/enabled = false
+linear_limit_y/enabled = false
+linear_spring_y/enabled = true
+angular_limit_y/enabled = false
+linear_limit_z/enabled = false
+linear_spring_z/enabled = true
+angular_limit_z/enabled = false

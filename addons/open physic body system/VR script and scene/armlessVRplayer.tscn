@@ -16,13 +16,13 @@ extents = Vector3( 0.5, 1, 1 )
 radius = 0.1
 mid_height = 2.5
 
-[sub_resource type="SphereShape" id=14]
+[sub_resource type="SphereShape" id=4]
 
-[sub_resource type="SphereMesh" id=15]
+[sub_resource type="SphereMesh" id=5]
 
-[sub_resource type="SphereShape" id=16]
+[sub_resource type="SphereShape" id=6]
 
-[sub_resource type="SphereMesh" id=17]
+[sub_resource type="SphereMesh" id=7]
 
 [sub_resource type="BoxShape" id=8]
 extents = Vector3( 1, 0.5, 1 )
@@ -30,25 +30,25 @@ extents = Vector3( 1, 0.5, 1 )
 [sub_resource type="CubeMesh" id=9]
 size = Vector3( 2, 1, 2 )
 
-[sub_resource type="PhysicsMaterial" id=20]
+[sub_resource type="PhysicsMaterial" id=10]
 
-[sub_resource type="SphereShape" id=18]
+[sub_resource type="SphereShape" id=11]
 
-[sub_resource type="SphereMesh" id=19]
+[sub_resource type="SphereMesh" id=12]
 
-[sub_resource type="SphereMesh" id=10]
+[sub_resource type="SphereMesh" id=13]
 radius = 0.2
 height = 0.4
 
-[sub_resource type="CapsuleMesh" id=11]
+[sub_resource type="CapsuleMesh" id=14]
 radius = 0.01
 mid_height = 0.2
 
-[sub_resource type="SphereMesh" id=12]
+[sub_resource type="SphereMesh" id=15]
 radius = 0.1
 height = 0.2
 
-[sub_resource type="SphereMesh" id=13]
+[sub_resource type="SphereMesh" id=16]
 radius = 0.1
 height = 0.2
 
@@ -147,11 +147,11 @@ stabilizing_sphere_p = NodePath("../stabilizing_sphere")
 
 [node name="CollisionShape" type="CollisionShape" parent="hip"]
 transform = Transform( 1, 0, 0, 0, -1.62921e-07, -1, 0, 1, -1.62921e-07, 0, 0, 0 )
-shape = SubResource( 14 )
+shape = SubResource( 4 )
 
 [node name="MeshInstance" type="MeshInstance" parent="hip"]
 transform = Transform( 1, 0, 0, 0, -1.62921e-07, -1, 0, 1, -1.62921e-07, 0, 0, 0 )
-mesh = SubResource( 15 )
+mesh = SubResource( 5 )
 material/0 = null
 
 [node name="torso" type="RigidBody" parent="."]
@@ -168,7 +168,7 @@ damping = 50
 
 [node name="CollisionShape" type="CollisionShape" parent="torso"]
 transform = Transform( 1, 0, 0, 0, -1.62921e-07, -1, 0, 1, -1.62921e-07, 0, 0, 0 )
-shape = SubResource( 16 )
+shape = SubResource( 6 )
 
 [node name="Generic6DOFJoint" type="Generic6DOFJoint" parent="torso"]
 nodes/node_a = NodePath("../../hip")
@@ -185,7 +185,7 @@ linear_spring_z/enabled = true
 
 [node name="MeshInstance" type="MeshInstance" parent="torso"]
 transform = Transform( 1, 0, 0, 0, -1.62921e-07, -1, 0, 1, -1.62921e-07, 0, 0, 0 )
-mesh = SubResource( 17 )
+mesh = SubResource( 7 )
 material/0 = null
 
 [node name="left_foot" type="RigidBody" parent="."]
@@ -247,7 +247,7 @@ material/0 = null
 [node name="stabilizing_sphere" type="RigidBody" parent="."]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0 )
 collision_layer = 0
-physics_material_override = SubResource( 20 )
+physics_material_override = SubResource( 10 )
 continuous_cd = true
 contacts_reported = 1
 contact_monitor = true
@@ -258,7 +258,7 @@ stiffness = 400
 damping = 50
 
 [node name="CollisionShape" type="CollisionShape" parent="stabilizing_sphere"]
-shape = SubResource( 18 )
+shape = SubResource( 11 )
 
 [node name="Generic6DOFJoint" type="Generic6DOFJoint" parent="stabilizing_sphere"]
 nodes/node_a = NodePath("../../hip")
@@ -271,7 +271,7 @@ linear_limit_z/enabled = false
 linear_spring_z/enabled = true
 
 [node name="MeshInstance" type="MeshInstance" parent="stabilizing_sphere"]
-mesh = SubResource( 19 )
+mesh = SubResource( 12 )
 material/0 = null
 
 [node name="ARVROrigin" type="ARVROrigin" parent="."]
@@ -288,19 +288,19 @@ far = 8192.0
 
 [node name="MeshInstance" type="MeshInstance" parent="ARVROrigin/hmd"]
 layers = 32
-mesh = SubResource( 10 )
+mesh = SubResource( 13 )
 material/0 = null
 
 [node name="MeshInstance2" type="MeshInstance" parent="ARVROrigin/hmd"]
 layers = 32
-mesh = SubResource( 11 )
+mesh = SubResource( 14 )
 material/0 = null
 
 [node name="left_controller" type="ARVRController" parent="ARVROrigin"]
 script = ExtResource( 3 )
 
 [node name="MeshInstance2" type="MeshInstance" parent="ARVROrigin/left_controller"]
-mesh = SubResource( 12 )
+mesh = SubResource( 15 )
 material/0 = null
 
 [node name="MeshInstance4" type="MeshInstance" parent="ARVROrigin/left_controller"]
@@ -312,5 +312,5 @@ controller_id = 2
 script = ExtResource( 3 )
 
 [node name="MeshInstance2" type="MeshInstance" parent="ARVROrigin/right_controller"]
-mesh = SubResource( 13 )
+mesh = SubResource( 16 )
 material/0 = null

@@ -6,10 +6,11 @@ onready var left_controller : Spatial = arvr_origin.get_node("left_controller")
 onready var right_controller : Spatial = arvr_origin.get_node("right_controller")
 onready var hmd : Spatial = arvr_origin.get_node("hmd")
 
+var height_offset : float = 0
+
 export var vertical_speed : float = 3
 
-export var stabilizing_sphere_p : NodePath
-onready var stabilizing_sphere :Spatial = get_node(stabilizing_sphere_p)
+
 
 
 var snap_turn_dir : int = 0
@@ -30,6 +31,12 @@ func _ready():
 #	right_controller.connect("farb_start",self,"change_followbody")
 
 func _physics_process(delta):
+		if target_height > max_height:
+			height_offset -= delta* 10
+		elif target_height < min_height:
+			height_offset += delta* 10
+	
+	
 #		locomotion
 		var dir := Vector3.ZERO
 		var cam_xform = hmd.get_global_transform()
@@ -56,15 +63,9 @@ func _physics_process(delta):
 			height_offset += 1 * delta * vertical_speed
 		
 #		movement through the base hip script
+		max_height = hmd.global_transform.origin.y 
 		target_height = hmd.global_transform.origin.y + height_offset - global_transform.origin.y
 		move_direction = dir
-		
-		stabilizing_sphere.target_pos = Vector3(0,-target_height,0)
-		if move_direction.length() > 0:
-			stabilizing_sphere.is_stabilizing_rotation = false
-		else:
-#			for bracking
-			stabilizing_sphere.is_stabilizing_rotation = true
 		
 		
 #		snap turning

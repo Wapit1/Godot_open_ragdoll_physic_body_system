@@ -22,12 +22,13 @@ export var forward_step_length : float = 5
 export var side_step_length : float = 4
 export var step_length_divider : float = 10
 
-export var is_using_basic_locomotion :bool = false
+export var is_using_basic_locomotion :bool = true
 export var is_using_sphere_locomotion : bool = true
 export var is_feet_just_for_show := true
 
 export var stabilizing_sphere_p : NodePath
 onready var stabilizing_sphere :Spatial = get_node(stabilizing_sphere_p)
+var foot_timer : float = 0
 
 func _ready():
 	var num_simultanous_active_foot_to_setup = num_simultanous_active_foot
@@ -40,17 +41,17 @@ func _ready():
 func _physics_process(delta):
 
 	if is_using_basic_locomotion:
-		feet_locomotion()
+		feet_locomotion(delta)
 	else:
 		for foot_p in feet:
 			var foot = get_node(foot_p)
-			foot.target_pos = foot.offset + Vector3(0,target_height/2,0)
+			foot.target_pos = foot.offset + Vector3(0,-target_height/2,0)
 	
 	if is_using_sphere_locomotion:
 		sphere_locomotion()
 	
 func sphere_locomotion():
-		stabilizing_sphere.target_pos = Vector3(0,-target_height,0)
+		stabilizing_sphere.target_pos = Vector3(0,-target_height*1.1,0)
 		if move_direction.length() > 0:
 			stabilizing_sphere.is_stabilizing_rotation = false
 			stabilizing_sphere.target_rot = move_direction.rotated(Vector3.UP,PI/2)*30
@@ -60,13 +61,17 @@ func sphere_locomotion():
 			stabilizing_sphere.is_stabilizing_rotation = true
 			
 			
-func feet_locomotion():
+func feet_locomotion(delta):
 	var move : Vector3 = move_direction * Vector3(side_step_length, 0, forward_step_length) * target_height / step_length_divider
 	var v_h = Vector3(0,-target_height,0)
 	
 	
 	var move_h = move + v_h
 	var step_length = move.length()
+	if move_direction.length() > 0:
+		foot_timer += delta
+	elif foot_timer != 0:
+		foot_timer = 0
 	
 	for foot_p in feet:
 		var foot = get_node(foot_p)
@@ -74,9 +79,9 @@ func feet_locomotion():
 		
 		var foot_offset_zx = Vector3(foot.offset.x,0,foot.offset.z)
 		
-		if (foot.is_grabbing|| (foot.get_colliding_bodies().size() > 0 && is_feet_just_for_show)) && move.length() > 0:
+		if (foot.is_grabbing|| (foot.get_colliding_bodies().size() > 0 && is_feet_just_for_show && foot_timer > 0.1)) && move.length() > 0:
 			foot.target_pos = - move + v_h + foot_offset_zx
-			
+			foot_timer = 0
 			if lowering_feet_index.has(foot_num):
 				lowering_feet_index.erase(foot_num)
 			if active_feet_index.has(foot_num):

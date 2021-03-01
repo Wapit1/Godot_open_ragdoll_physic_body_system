@@ -75,8 +75,6 @@ contact_monitor = true
 can_sleep = false
 script = ExtResource( 2 )
 body_p = NodePath("../hip")
-stiffness = 400
-damping = 50
 
 [node name="CollisionShape" type="CollisionShape" parent="left_foot"]
 shape = SubResource( 4 )
@@ -138,8 +136,6 @@ contact_monitor = true
 can_sleep = false
 script = ExtResource( 2 )
 body_p = NodePath("../hip")
-stiffness = 400
-damping = 50
 
 [node name="CollisionShape" type="CollisionShape" parent="right_foot"]
 shape = SubResource( 4 )
@@ -168,12 +164,12 @@ movement_hip_p = NodePath("../hip")
 num_of_average_pos = 40
 
 [node name="stabilizing_sphere" type="RigidBody" parent="."]
-collision_mask = 0
+collision_layer = 0
 physics_material_override = SubResource( 11 )
 script = ExtResource( 4 )
 body_p = NodePath("../hip")
 stiffness = 400
-damping = 15
+damping = 50
 
 [node name="CollisionShape" type="CollisionShape" parent="stabilizing_sphere"]
 shape = SubResource( 9 )

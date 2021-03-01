@@ -482,6 +482,7 @@ collision_mask = 3
 shape = SubResource( 6 )
 
 [node name="MeshInstance" type="MeshInstance" parent="static terrain/cube36"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -8.28535, 0 )
 mesh = SubResource( 7 )
 material/0 = null
 

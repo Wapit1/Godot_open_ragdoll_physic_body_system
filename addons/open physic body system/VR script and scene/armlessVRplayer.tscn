@@ -1,10 +1,11 @@
-[gd_scene load_steps=22 format=2]
+[gd_scene load_steps=23 format=2]
 
 [ext_resource path="res://addons/open physic body system/VR script and scene/phys_hand_vr.gd" type="Script" id=1]
 [ext_resource path="res://addons/open physic body system/base script/phys_extremities.gd" type="Script" id=2]
 [ext_resource path="res://addons/open physic body system/VR script and scene/controller_input_signal_out.gd" type="Script" id=3]
 [ext_resource path="res://addons/open physic body system/VR script and scene/vr_hip.gd" type="Script" id=4]
 [ext_resource path="res://addons/open physic body system/base script/Stabilize_cam.gd" type="Script" id=5]
+[ext_resource path="res://addons/open physic body system/base script/stabilizing_sphere.gd" type="Script" id=6]
 
 [sub_resource type="CubeMesh" id=1]
 size = Vector3( 1, 2, 2 )
@@ -142,8 +143,8 @@ axis_lock_angular_z = true
 script = ExtResource( 4 )
 feet = [ NodePath("../left_foot"), NodePath("../right_foot") ]
 slam_force = 1.0
-arvr_origin_p = NodePath("../ARVROrigin")
 stabilizing_sphere_p = NodePath("../stabilizing_sphere")
+arvr_origin_p = NodePath("../ARVROrigin")
 
 [node name="CollisionShape" type="CollisionShape" parent="hip"]
 transform = Transform( 1, 0, 0, 0, -1.62921e-07, -1, 0, 1, -1.62921e-07, 0, 0, 0 )
@@ -196,8 +197,6 @@ contacts_reported = 1
 contact_monitor = true
 script = ExtResource( 2 )
 body_p = NodePath("../hip")
-stiffness = 400
-damping = 20
 
 [node name="CollisionShape" type="CollisionShape" parent="left_foot"]
 shape = SubResource( 8 )
@@ -224,8 +223,6 @@ contacts_reported = 1
 contact_monitor = true
 script = ExtResource( 2 )
 body_p = NodePath("../hip")
-stiffness = 400
-damping = 20
 
 [node name="CollisionShape" type="CollisionShape" parent="right_foot"]
 shape = SubResource( 8 )
@@ -251,9 +248,10 @@ physics_material_override = SubResource( 10 )
 continuous_cd = true
 contacts_reported = 1
 contact_monitor = true
-script = ExtResource( 2 )
+script = ExtResource( 6 )
 body_p = NodePath("../hip")
 is_stabilizing_rotation = false
+is_targeting_basis = false
 stiffness = 400
 damping = 50
 

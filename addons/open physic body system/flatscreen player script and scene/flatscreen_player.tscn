@@ -3,7 +3,7 @@
 [ext_resource path="res://addons/open physic body system/base script/Stabilize_cam.gd" type="Script" id=1]
 [ext_resource path="res://addons/open physic body system/base script/phys_extremities.gd" type="Script" id=2]
 [ext_resource path="res://addons/open physic body system/flatscreen player script and scene/flatscreen_body.gd" type="Script" id=3]
-[ext_resource path="res://addons/open physic body system/flatscreen player script and scene/stabilizing_sphere.gd" type="Script" id=4]
+[ext_resource path="res://addons/open physic body system/base script/stabilizing_sphere.gd" type="Script" id=4]
 
 [sub_resource type="CapsuleShape" id=1]
 margin = 0.001
@@ -30,13 +30,13 @@ size = Vector3( 2, 1, 2 )
 friction = 9.22337e+18
 rough = true
 
-[sub_resource type="PhysicsMaterial" id=11]
+[sub_resource type="PhysicsMaterial" id=9]
 friction = 9.22337e+18
 rough = true
 
-[sub_resource type="SphereShape" id=9]
+[sub_resource type="SphereShape" id=10]
 
-[sub_resource type="SphereMesh" id=10]
+[sub_resource type="SphereMesh" id=11]
 
 [node name="flatscreen_player" type="Spatial"]
 
@@ -165,17 +165,17 @@ num_of_average_pos = 40
 
 [node name="stabilizing_sphere" type="RigidBody" parent="."]
 collision_layer = 0
-physics_material_override = SubResource( 11 )
+physics_material_override = SubResource( 9 )
 script = ExtResource( 4 )
 body_p = NodePath("../hip")
 stiffness = 400
 damping = 50
 
 [node name="CollisionShape" type="CollisionShape" parent="stabilizing_sphere"]
-shape = SubResource( 9 )
+shape = SubResource( 10 )
 
 [node name="MeshInstance" type="MeshInstance" parent="stabilizing_sphere"]
-mesh = SubResource( 10 )
+mesh = SubResource( 11 )
 material/0 = null
 
 [node name="Generic6DOFJoint" type="Generic6DOFJoint" parent="stabilizing_sphere"]

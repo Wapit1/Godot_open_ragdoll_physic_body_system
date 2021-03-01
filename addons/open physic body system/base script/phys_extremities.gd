@@ -18,6 +18,7 @@ export var target_basis : Basis
 onready var pos_joint : Generic6DOFJoint = get_node("Generic6DOFJoint")
 
 export var is_stabilizing_rotation : bool = true
+export var is_targeting_basis : bool = true
 
 export var PID_to_zero := Vector3(2,0,0) 
 var last_error_z := Vector3.ZERO
@@ -103,6 +104,7 @@ func _physics_process(delta):
 				var correction_to_zero = PID(-angular_velocity,delta,0)
 				add_torque(correction_to_zero)
 				#rotation
+			if is_targeting_basis:
 				var error_target :Vector3 = - target_basis.z.cross(transform.basis.z)
 				var correction_to_target = PID(error_target,delta,1)
 				add_torque(correction_to_target)

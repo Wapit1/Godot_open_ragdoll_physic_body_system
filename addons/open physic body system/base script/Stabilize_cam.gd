@@ -33,7 +33,11 @@ func _physics_process(delta):
 			target_pos += pos
 		
 		target_pos = target_pos / average_pos_array.size()
-		
-		global_transform.origin = target_pos
-		
+		if hip.move_direction.length() > 0:
+			global_transform.origin = Vector3(track_pos.x + offset.x,target_pos.y,track_pos.z + offset.z)
+			average_pos_array.clear()
+			average_pos_array.append(Vector3(track_pos.x + offset.x,target_pos.y,track_pos.z + offset.z))
+		else:
+			global_transform.origin = target_pos
+			
 		

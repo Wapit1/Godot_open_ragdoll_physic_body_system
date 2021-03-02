@@ -143,6 +143,7 @@ axis_lock_angular_z = true
 script = ExtResource( 4 )
 feet = [ NodePath("../left_foot"), NodePath("../right_foot") ]
 slam_force = 1.0
+just_for_show_feet_timer = 0.5
 stabilizing_sphere_p = NodePath("../stabilizing_sphere")
 arvr_origin_p = NodePath("../ARVROrigin")
 

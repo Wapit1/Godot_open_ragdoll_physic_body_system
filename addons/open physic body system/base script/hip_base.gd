@@ -25,7 +25,7 @@ export var step_length_divider : float = 10
 export var is_using_basic_locomotion :bool = true
 export var is_using_sphere_locomotion : bool = true
 export var is_feet_just_for_show := true
-
+export var just_for_show_feet_timer :float = 0.2
 export var stabilizing_sphere_p : NodePath
 onready var stabilizing_sphere :Spatial = get_node(stabilizing_sphere_p)
 var foot_timer : float = 0
@@ -79,13 +79,15 @@ func feet_locomotion(delta):
 		
 		var foot_offset_zx = Vector3(foot.offset.x,0,foot.offset.z)
 		
-		if (foot.is_grabbing|| (foot.get_colliding_bodies().size() > 0 && is_feet_just_for_show && foot_timer > 0.1)) && move.length() > 0:
+		if (foot.is_grabbing|| (is_feet_just_for_show && foot_timer > just_for_show_feet_timer)) && move.length() > 0:
 			foot.target_pos = - move + v_h + foot_offset_zx
-			foot_timer = 0
+			
 			if lowering_feet_index.has(foot_num):
 				lowering_feet_index.erase(foot_num)
+				foot_timer = 0
 			if active_feet_index.has(foot_num):
 					change_active_feet_index(active_feet_index.find(foot_num))
+					foot_timer = 0
 
 		elif (active_feet_index.has(foot_num)  || lowering_feet_index.has(foot_num) )&& move.length() > 0 :
 			
@@ -107,6 +109,7 @@ func feet_locomotion(delta):
 			foot.target_pos = -move + v_h * 0.9
 			
 		else:
+			foot_timer = 0
 			if foot.is_grabbing:
 				foot.drop()
 			foot.target_pos = v_h + foot_offset_zx

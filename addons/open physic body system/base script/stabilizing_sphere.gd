@@ -12,9 +12,9 @@ func _physics_process(delta):
 	
 	
 	add_torque(PID_calculate(target_rot-angular_velocity,delta))
-	
+	pass
 func PID_calculate(current_error:Vector3, time:float):
 	integral += current_error * time
 	var deriv = (current_error - last_error) /time
 	last_error = current_error
-	return current_error*PID_rolling.x + integral_z *PID_rolling.y + deriv*PID_rolling.z
+	return current_error*PID_rolling.x + integral *PID_rolling.y + deriv*PID_rolling.z

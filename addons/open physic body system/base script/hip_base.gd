@@ -17,6 +17,7 @@ var upper_body_parts : Array = []
 
 var previous_move : = Vector3.ZERO
 
+
 export var forward_step_length : float = 5
 #export var backward_step_length : float = 2
 export var side_step_length : float = 4
@@ -48,19 +49,9 @@ func _physics_process(delta):
 			foot.target_pos = foot.offset + Vector3(0,-target_height/2,0)
 	
 	if is_using_sphere_locomotion:
-		sphere_locomotion()
-	
-func sphere_locomotion():
 		stabilizing_sphere.target_pos = Vector3(0,-target_height*1.1,0)
-		if move_direction.length() > 0:
-			stabilizing_sphere.is_stabilizing_rotation = false
-			stabilizing_sphere.target_rot = move_direction.rotated(Vector3.UP,PI/2)*30
-		else:
-#			for bracking
-			stabilizing_sphere.target_rot = Vector3.ZERO
-			stabilizing_sphere.is_stabilizing_rotation = true
-			
-			
+		stabilizing_sphere.target_rot = move_direction.rotated(Vector3.UP,PI/2)*10
+	
 func feet_locomotion(delta):
 	var move : Vector3 = move_direction * Vector3(side_step_length, 0, forward_step_length) * target_height / step_length_divider
 	var v_h = Vector3(0,-target_height,0)

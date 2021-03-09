@@ -1,10 +1,10 @@
-[gd_scene load_steps=23 format=2]
+[gd_scene load_steps=24 format=2]
 
 [ext_resource path="res://addons/open physic body system/VR script and scene/phys_hand_vr.gd" type="Script" id=1]
 [ext_resource path="res://addons/open physic body system/base script/phys_extremities.gd" type="Script" id=2]
 [ext_resource path="res://addons/open physic body system/VR script and scene/controller_input_signal_out.gd" type="Script" id=3]
 [ext_resource path="res://addons/open physic body system/VR script and scene/vr_hip.gd" type="Script" id=4]
-[ext_resource path="res://addons/open physic body system/base script/Stabilize_cam.gd" type="Script" id=5]
+[ext_resource path="res://addons/open physic body system/VR script and scene/stabilizeARVR.gd" type="Script" id=5]
 [ext_resource path="res://addons/open physic body system/base script/stabilizing_sphere.gd" type="Script" id=6]
 
 [sub_resource type="CubeMesh" id=1]
@@ -32,24 +32,32 @@ extents = Vector3( 1, 0.5, 1 )
 size = Vector3( 2, 1, 2 )
 
 [sub_resource type="PhysicsMaterial" id=10]
+friction = 9.22337e+18
 
 [sub_resource type="SphereShape" id=11]
+radius = 2.0
 
 [sub_resource type="SphereMesh" id=12]
+radius = 2.0
+height = 4.0
 
-[sub_resource type="SphereMesh" id=13]
+[sub_resource type="SpatialMaterial" id=13]
+flags_transparent = true
+albedo_color = Color( 1, 1, 1, 0.607843 )
+
+[sub_resource type="SphereMesh" id=14]
 radius = 0.2
 height = 0.4
 
-[sub_resource type="CapsuleMesh" id=14]
+[sub_resource type="CapsuleMesh" id=15]
 radius = 0.01
 mid_height = 0.2
 
-[sub_resource type="SphereMesh" id=15]
+[sub_resource type="SphereMesh" id=16]
 radius = 0.1
 height = 0.2
 
-[sub_resource type="SphereMesh" id=16]
+[sub_resource type="SphereMesh" id=17]
 radius = 0.1
 height = 0.2
 
@@ -253,8 +261,9 @@ script = ExtResource( 6 )
 body_p = NodePath("../hip")
 is_stabilizing_rotation = false
 is_targeting_basis = false
-stiffness = 400
+stiffness = 700
 damping = 50
+PID_rolling = Vector3( 700, 0, 200 )
 
 [node name="CollisionShape" type="CollisionShape" parent="stabilizing_sphere"]
 shape = SubResource( 11 )
@@ -271,13 +280,13 @@ linear_spring_z/enabled = true
 
 [node name="MeshInstance" type="MeshInstance" parent="stabilizing_sphere"]
 mesh = SubResource( 12 )
-material/0 = null
+material/0 = SubResource( 13 )
 
 [node name="ARVROrigin" type="ARVROrigin" parent="."]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 5, 0 )
 world_scale = 10.0
 script = ExtResource( 5 )
-track_spatial_p = NodePath("../torso")
+track_spatial_p = NodePath("../hip")
 movement_hip_p = NodePath("../hip")
 
 [node name="hmd" type="ARVRCamera" parent="ARVROrigin"]
@@ -287,19 +296,19 @@ far = 8192.0
 
 [node name="MeshInstance" type="MeshInstance" parent="ARVROrigin/hmd"]
 layers = 32
-mesh = SubResource( 13 )
+mesh = SubResource( 14 )
 material/0 = null
 
 [node name="MeshInstance2" type="MeshInstance" parent="ARVROrigin/hmd"]
 layers = 32
-mesh = SubResource( 14 )
+mesh = SubResource( 15 )
 material/0 = null
 
 [node name="left_controller" type="ARVRController" parent="ARVROrigin"]
 script = ExtResource( 3 )
 
 [node name="MeshInstance2" type="MeshInstance" parent="ARVROrigin/left_controller"]
-mesh = SubResource( 15 )
+mesh = SubResource( 16 )
 material/0 = null
 
 [node name="MeshInstance4" type="MeshInstance" parent="ARVROrigin/left_controller"]
@@ -311,5 +320,5 @@ controller_id = 2
 script = ExtResource( 3 )
 
 [node name="MeshInstance2" type="MeshInstance" parent="ARVROrigin/right_controller"]
-mesh = SubResource( 16 )
+mesh = SubResource( 17 )
 material/0 = null

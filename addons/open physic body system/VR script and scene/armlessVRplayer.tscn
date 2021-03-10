@@ -1,0 +1,324 @@
+[gd_scene load_steps=24 format=2]
+
+[ext_resource path="res://addons/open physic body system/VR script and scene/phys_hand_vr.gd" type="Script" id=1]
+[ext_resource path="res://addons/open physic body system/base script/phys_extremities.gd" type="Script" id=2]
+[ext_resource path="res://addons/open physic body system/VR script and scene/controller_input_signal_out.gd" type="Script" id=3]
+[ext_resource path="res://addons/open physic body system/VR script and scene/vr_hip.gd" type="Script" id=4]
+[ext_resource path="res://addons/open physic body system/VR script and scene/stabilizeARVR.gd" type="Script" id=5]
+[ext_resource path="res://addons/open physic body system/base script/stabilizing_sphere.gd" type="Script" id=6]
+
+[sub_resource type="CubeMesh" id=1]
+size = Vector3( 1, 2, 2 )
+
+[sub_resource type="BoxShape" id=2]
+extents = Vector3( 0.5, 1, 1 )
+
+[sub_resource type="CapsuleMesh" id=3]
+radius = 0.1
+mid_height = 2.5
+
+[sub_resource type="SphereShape" id=4]
+
+[sub_resource type="SphereMesh" id=5]
+
+[sub_resource type="SphereShape" id=6]
+
+[sub_resource type="SphereMesh" id=7]
+
+[sub_resource type="BoxShape" id=8]
+extents = Vector3( 1, 0.5, 1 )
+
+[sub_resource type="CubeMesh" id=9]
+size = Vector3( 2, 1, 2 )
+
+[sub_resource type="PhysicsMaterial" id=10]
+friction = 9.22337e+18
+
+[sub_resource type="SphereShape" id=11]
+radius = 2.0
+
+[sub_resource type="SphereMesh" id=12]
+radius = 2.0
+height = 4.0
+
+[sub_resource type="SpatialMaterial" id=13]
+flags_transparent = true
+albedo_color = Color( 1, 1, 1, 0.607843 )
+
+[sub_resource type="SphereMesh" id=14]
+radius = 0.2
+height = 0.4
+
+[sub_resource type="CapsuleMesh" id=15]
+radius = 0.01
+mid_height = 0.2
+
+[sub_resource type="SphereMesh" id=16]
+radius = 0.1
+height = 0.2
+
+[sub_resource type="SphereMesh" id=17]
+radius = 0.1
+height = 0.2
+
+[node name="armlessVRplayer" type="Spatial"]
+
+[node name="left_hand" type="RigidBody" parent="."]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -4.76085, 2.72621, 0 )
+mass = 0.1
+gravity_scale = 0.0
+continuous_cd = true
+contacts_reported = 10
+contact_monitor = true
+can_sleep = false
+script = ExtResource( 1 )
+body_p = NodePath("../torso")
+controller_p = NodePath("../ARVROrigin/left_controller")
+
+[node name="MeshInstance3" type="MeshInstance" parent="left_hand"]
+mesh = SubResource( 1 )
+material/0 = null
+
+[node name="CollisionShape" type="CollisionShape" parent="left_hand"]
+shape = SubResource( 2 )
+
+[node name="MeshInstance" type="MeshInstance" parent="left_hand"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1 )
+mesh = SubResource( 3 )
+material/0 = null
+
+[node name="Generic6DOFJoint" type="Generic6DOFJoint" parent="left_hand"]
+nodes/node_a = NodePath("../../torso")
+nodes/node_b = NodePath("..")
+linear_limit_x/enabled = false
+linear_spring_x/enabled = true
+angular_limit_x/enabled = false
+linear_limit_y/enabled = false
+linear_spring_y/enabled = true
+angular_limit_y/enabled = false
+linear_limit_z/enabled = false
+linear_spring_z/enabled = true
+angular_limit_z/enabled = false
+
+[node name="right_hand" type="RigidBody" parent="."]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 2.91242, 3.03229, 0 )
+mass = 0.1
+gravity_scale = 0.0
+continuous_cd = true
+contacts_reported = 10
+contact_monitor = true
+can_sleep = false
+script = ExtResource( 1 )
+body_p = NodePath("../torso")
+controller_p = NodePath("../ARVROrigin/right_controller")
+
+[node name="MeshInstance3" type="MeshInstance" parent="right_hand"]
+mesh = SubResource( 1 )
+material/0 = null
+
+[node name="CollisionShape" type="CollisionShape" parent="right_hand"]
+shape = SubResource( 2 )
+
+[node name="MeshInstance2" type="MeshInstance" parent="right_hand"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1 )
+mesh = SubResource( 3 )
+material/0 = null
+
+[node name="Generic6DOFJoint" type="Generic6DOFJoint" parent="right_hand"]
+nodes/node_a = NodePath("../../torso")
+nodes/node_b = NodePath("..")
+linear_limit_x/enabled = false
+linear_spring_x/enabled = true
+angular_limit_x/enabled = false
+linear_limit_y/enabled = false
+linear_spring_y/enabled = true
+angular_limit_y/enabled = false
+linear_limit_z/enabled = false
+linear_spring_z/enabled = true
+angular_limit_z/enabled = false
+
+[node name="hip" type="RigidBody" parent="."]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 5, 0 )
+collision_layer = 2
+collision_mask = 0
+mass = 5.0
+continuous_cd = true
+contacts_reported = 10
+can_sleep = false
+axis_lock_angular_x = true
+axis_lock_angular_y = true
+axis_lock_angular_z = true
+script = ExtResource( 4 )
+feet = [ NodePath("../left_foot"), NodePath("../right_foot") ]
+slam_force = 1.0
+just_for_show_feet_timer = 0.5
+stabilizing_sphere_p = NodePath("../stabilizing_sphere")
+arvr_origin_p = NodePath("../ARVROrigin")
+
+[node name="CollisionShape" type="CollisionShape" parent="hip"]
+transform = Transform( 1, 0, 0, 0, -1.62921e-07, -1, 0, 1, -1.62921e-07, 0, 0, 0 )
+shape = SubResource( 4 )
+
+[node name="MeshInstance" type="MeshInstance" parent="hip"]
+transform = Transform( 1, 0, 0, 0, -1.62921e-07, -1, 0, 1, -1.62921e-07, 0, 0, 0 )
+mesh = SubResource( 5 )
+material/0 = null
+
+[node name="torso" type="RigidBody" parent="."]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 10, 0 )
+mass = 10.0
+continuous_cd = true
+contacts_reported = 2
+contact_monitor = true
+script = ExtResource( 2 )
+body_p = NodePath("../hip")
+is_stable = true
+stiffness = 500
+damping = 50
+
+[node name="CollisionShape" type="CollisionShape" parent="torso"]
+transform = Transform( 1, 0, 0, 0, -1.62921e-07, -1, 0, 1, -1.62921e-07, 0, 0, 0 )
+shape = SubResource( 6 )
+
+[node name="Generic6DOFJoint" type="Generic6DOFJoint" parent="torso"]
+nodes/node_a = NodePath("../../hip")
+nodes/node_b = NodePath("..")
+linear_limit_x/upper_distance = 1.0
+linear_limit_x/lower_distance = -1.0
+linear_spring_x/enabled = true
+linear_limit_y/upper_distance = 1.0
+linear_limit_y/lower_distance = -1.0
+linear_spring_y/enabled = true
+linear_limit_z/upper_distance = 1.0
+linear_limit_z/lower_distance = -1.0
+linear_spring_z/enabled = true
+
+[node name="MeshInstance" type="MeshInstance" parent="torso"]
+transform = Transform( 1, 0, 0, 0, -1.62921e-07, -1, 0, 1, -1.62921e-07, 0, 0, 0 )
+mesh = SubResource( 7 )
+material/0 = null
+
+[node name="left_foot" type="RigidBody" parent="."]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -2, 0.5, 0 )
+collision_layer = 0
+continuous_cd = true
+contacts_reported = 1
+contact_monitor = true
+script = ExtResource( 2 )
+body_p = NodePath("../hip")
+
+[node name="CollisionShape" type="CollisionShape" parent="left_foot"]
+shape = SubResource( 8 )
+
+[node name="Generic6DOFJoint" type="Generic6DOFJoint" parent="left_foot"]
+nodes/node_a = NodePath("../../hip")
+nodes/node_b = NodePath("..")
+linear_limit_x/enabled = false
+linear_spring_x/enabled = true
+linear_limit_y/enabled = false
+linear_spring_y/enabled = true
+linear_limit_z/enabled = false
+linear_spring_z/enabled = true
+
+[node name="MeshInstance" type="MeshInstance" parent="left_foot"]
+mesh = SubResource( 9 )
+material/0 = null
+
+[node name="right_foot" type="RigidBody" parent="."]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 2, 0.5, 0 )
+collision_layer = 0
+continuous_cd = true
+contacts_reported = 1
+contact_monitor = true
+script = ExtResource( 2 )
+body_p = NodePath("../hip")
+
+[node name="CollisionShape" type="CollisionShape" parent="right_foot"]
+shape = SubResource( 8 )
+
+[node name="Generic6DOFJoint" type="Generic6DOFJoint" parent="right_foot"]
+nodes/node_a = NodePath("../../hip")
+nodes/node_b = NodePath("..")
+linear_limit_x/enabled = false
+linear_spring_x/enabled = true
+linear_limit_y/enabled = false
+linear_spring_y/enabled = true
+linear_limit_z/enabled = false
+linear_spring_z/enabled = true
+
+[node name="MeshInstance" type="MeshInstance" parent="right_foot"]
+mesh = SubResource( 9 )
+material/0 = null
+
+[node name="stabilizing_sphere" type="RigidBody" parent="."]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0 )
+collision_layer = 0
+physics_material_override = SubResource( 10 )
+continuous_cd = true
+contacts_reported = 1
+contact_monitor = true
+script = ExtResource( 6 )
+body_p = NodePath("../hip")
+is_stabilizing_rotation = false
+is_targeting_basis = false
+stiffness = 700
+damping = 50
+PID_rolling = Vector3( 700, 0, 200 )
+
+[node name="CollisionShape" type="CollisionShape" parent="stabilizing_sphere"]
+shape = SubResource( 11 )
+
+[node name="Generic6DOFJoint" type="Generic6DOFJoint" parent="stabilizing_sphere"]
+nodes/node_a = NodePath("../../hip")
+nodes/node_b = NodePath("..")
+linear_limit_x/enabled = false
+linear_spring_x/enabled = true
+linear_limit_y/enabled = false
+linear_spring_y/enabled = true
+linear_limit_z/enabled = false
+linear_spring_z/enabled = true
+
+[node name="MeshInstance" type="MeshInstance" parent="stabilizing_sphere"]
+mesh = SubResource( 12 )
+material/0 = SubResource( 13 )
+
+[node name="ARVROrigin" type="ARVROrigin" parent="."]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 5, 0 )
+world_scale = 10.0
+script = ExtResource( 5 )
+track_spatial_p = NodePath("../hip")
+movement_hip_p = NodePath("../hip")
+
+[node name="hmd" type="ARVRCamera" parent="ARVROrigin"]
+cull_mask = 31775
+current = true
+far = 8192.0
+
+[node name="MeshInstance" type="MeshInstance" parent="ARVROrigin/hmd"]
+layers = 32
+mesh = SubResource( 14 )
+material/0 = null
+
+[node name="MeshInstance2" type="MeshInstance" parent="ARVROrigin/hmd"]
+layers = 32
+mesh = SubResource( 15 )
+material/0 = null
+
+[node name="left_controller" type="ARVRController" parent="ARVROrigin"]
+script = ExtResource( 3 )
+
+[node name="MeshInstance2" type="MeshInstance" parent="ARVROrigin/left_controller"]
+mesh = SubResource( 16 )
+material/0 = null
+
+[node name="MeshInstance4" type="MeshInstance" parent="ARVROrigin/left_controller"]
+mesh = SubResource( 3 )
+material/0 = null
+
+[node name="right_controller" type="ARVRController" parent="ARVROrigin"]
+controller_id = 2
+script = ExtResource( 3 )
+
+[node name="MeshInstance2" type="MeshInstance" parent="ARVROrigin/right_controller"]
+mesh = SubResource( 17 )
+material/0 = null

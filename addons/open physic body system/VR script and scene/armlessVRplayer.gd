@@ -63,7 +63,7 @@ func _physics_process(delta):
 			dir += cam_xform.basis.x 
 		
 		dir = dir.normalized()
-		vel = dir * speed * delta
+#		vel = dir * speed * delta
 		if rightcontrol.axis[1] < -0.5 :
 			vel.y = -1 * delta * vertical_speed
 			height_offset += -1 * delta * vertical_speed
@@ -76,21 +76,23 @@ func _physics_process(delta):
 		else:
 			vel.y = 0
 		
-		if vel.length() != 0:
-			move_and_collide(vel,false)
+		body.move_direction = Vector2(dir.x,dir.z)
+		
+#		if vel.length() != 0:
+#			move_and_collide(vel,false)
 #			if prev_vel != vel:
 #				body.apply_central_impulse((prev_vel-vel)*100)
 #				left_hand.apply_central_impulse(vel-prev_vel)
 #				right_hand.apply_central_impulse(vel-prev_vel)
 		
-		elif followbody:
-			var follow_pos :Vector3 = body.global_transform.origin + Vector3(0,height_offset,0)
-			var precision = 70
-			if (follow_pos * precision).round() != (global_transform.origin* precision).round():
-				move_and_collide(( follow_pos - global_transform.origin) * speed/2 * delta)
+#		elif followbody:
+#			var follow_pos :Vector3 = body.global_transform.origin + Vector3(0,height_offset,0)
+#			var precision = 70
+#			if (follow_pos * precision).round() != (global_transform.origin* precision).round():
+#				move_and_collide(( follow_pos - global_transform.origin) * speed/2 * delta)
 #			else:
 #				followbody = false
-		prev_vel = vel
+#		prev_vel = vel
 		
 		
 		- head.global_transform.origin + global_transform.origin 

@@ -31,7 +31,6 @@ size = Vector3( 40, 40, 40 )
 [sub_resource type="CubeMesh" id=8]
 
 [sub_resource type="BoxShape" id=9]
-extents = Vector3( 0.1, 0.1, 0.1 )
 
 [node name="game" type="Spatial"]
 

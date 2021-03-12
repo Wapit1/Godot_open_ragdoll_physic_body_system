@@ -263,7 +263,7 @@ is_stabilizing_rotation = false
 is_targeting_basis = false
 stiffness = 700
 damping = 50
-PID_rolling = Vector3( 700, 0, 200 )
+PID_rolling = Vector3( 1000, 0, 400 )
 
 [node name="CollisionShape" type="CollisionShape" parent="stabilizing_sphere"]
 shape = SubResource( 11 )

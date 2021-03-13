@@ -29,6 +29,7 @@ export var is_feet_just_for_show := true
 export var just_for_show_feet_timer :float = 0.2
 export var stabilizing_sphere_p : NodePath
 onready var stabilizing_sphere :Spatial = get_node(stabilizing_sphere_p)
+export var sphere_speed : float = 3
 var foot_timer : float = 0
 
 func _ready():
@@ -50,7 +51,7 @@ func _physics_process(delta):
 	
 	if is_using_sphere_locomotion:
 		stabilizing_sphere.target_pos = Vector3(0,-target_height*1.1,0)
-		stabilizing_sphere.target_rot = move_direction.rotated(Vector3.UP,PI/2)*10
+		stabilizing_sphere.target_rot = move_direction.rotated(Vector3.UP,PI/2)*sphere_speed
 	
 func feet_locomotion(delta):
 	var move : Vector3 = move_direction * Vector3(side_step_length, 0, forward_step_length) * target_height / step_length_divider

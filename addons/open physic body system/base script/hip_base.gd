@@ -32,6 +32,8 @@ onready var stabilizing_sphere :Spatial = get_node(stabilizing_sphere_p)
 export var sphere_speed : float = 3
 var foot_timer : float = 0
 
+var input_direction := Vector3.ZERO
+
 func _ready():
 	var num_simultanous_active_foot_to_setup = num_simultanous_active_foot
 	while num_simultanous_active_foot_to_setup > 0:

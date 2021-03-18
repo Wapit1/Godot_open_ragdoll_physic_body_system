@@ -17,10 +17,13 @@ func _physics_process(delta):
 #	else:
 #		angular_velocity = Vector3.ZERO
 	if previous_target_rot != target_rot:
-		linear_velocity = linear_velocity.rotated(Vector3.UP,target_rot.cross(angular_velocity).y)
-		angular_velocity = angular_velocity.rotated(Vector3.UP,target_rot.cross(angular_velocity).y)
+		linear_velocity /= (previous_target_rot - target_rot).length() +1
+		
+#		linear_velocity = linear_velocity.rotated(Vector3.UP,target_rot.cross(angular_velocity).y)
+#		angular_velocity = angular_velocity.rotated(Vector3.UP,target_rot.cross(angular_velocity).y)
 	if target_rot.length() <= 0:
 		linear_velocity = Vector3.ZERO  
+		angular_velocity = Vector3.ZERO
 	
 	previous_target_rot = target_rot
 

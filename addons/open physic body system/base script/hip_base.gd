@@ -29,7 +29,7 @@ export var is_feet_just_for_show := true
 export var just_for_show_feet_timer :float = 0.2
 export var stabilizing_sphere_p : NodePath
 onready var stabilizing_sphere :Spatial = get_node(stabilizing_sphere_p)
-export var sphere_speed : float = 3
+export var sphere_speed : float = 4
 var foot_timer : float = 0
 
 var input_direction := Vector3.ZERO

@@ -277,11 +277,10 @@ contacts_reported = 1
 contact_monitor = true
 script = ExtResource( 6 )
 body_p = NodePath("../hip")
-is_stabilizing_rotation = false
 is_targeting_basis = false
 stiffness = 700
 damping = 50
-PID_rolling = Vector3( 1000, 0, 400 )
+PID_rolling = Vector3( 1000, 0, 500 )
 
 [node name="CollisionShape" type="CollisionShape" parent="stabilizing_sphere"]
 shape = SubResource( 12 )

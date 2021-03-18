@@ -175,7 +175,6 @@ material/0 = null
 
 [node name="head_collider" type="RigidBody" parent="."]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 10, 0 )
-collision_layer = 0
 continuous_cd = true
 contacts_reported = 2
 contact_monitor = true
@@ -304,7 +303,7 @@ material/0 = SubResource( 14 )
 [node name="ARVROrigin" type="ARVROrigin" parent="."]
 world_scale = 10.0
 script = ExtResource( 5 )
-track_spatial_p = NodePath("../hip")
+track_spatial_p = NodePath("../stabilizing_sphere")
 movement_hip_p = NodePath("../hip")
 head_collider_p = NodePath("../head_collider")
 

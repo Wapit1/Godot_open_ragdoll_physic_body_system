@@ -14,8 +14,8 @@ export var vertical_speed : float = 3
 
 # radian angle to concider the hmd as angled
 export var angle_for_angled_hmd : float = 0.5
-export var max_range_from_flat_hmd : float = 3
-export var max_range_from_angled_hmd : float = 6
+export var max_range_from_flat_hmd : float = 2
+export var max_range_from_angled_hmd : float = 5
 var is_catching_up_to_hmd : bool = false
 var catching_up_move := Vector3.ZERO 
 var last_valid_hmd_height : float = 0
@@ -39,7 +39,7 @@ func _ready():
 func _physics_process(delta):
 #	separation as a function, both for cleanliness (as it could get bloated later on) 
 #and for using an as_method on other node to deferentiate hip_base from VR_hip
-	hmd_catching_up_to()
+	
 	
 	
 	if target_height > max_height:
@@ -85,8 +85,21 @@ func _physics_process(delta):
 			height_offset -= 1 * delta * vertical_speed
 	elif right_controller.axis[1] > 0.5 :
 			height_offset += 1 * delta * vertical_speed
-			
-	last_valid_hmd_height = (hmd.global_transform.origin - global_transform.origin).y 
+	
+#	this line is for testing purposes
+#	last_valid_hmd_height = (hmd.global_transform.origin - global_transform.origin).y 
+
+	if input_direction.length() <= 0:
+		hmd_catching_up_to()
+	else:
+		catching_up_move = Vector3.ZERO
+		is_catching_up_to_hmd = false
+		
+#	to be replaced with proper a
+#	if arvr_origin.is_head_stuck:
+#		input_direction = Vector3.ZERO 
+	
+	
 #		movement through the base hip script
 	max_height = hmd.global_transform.origin.y 
 	target_height = last_valid_hmd_height + height_offset 
@@ -95,25 +108,26 @@ func _physics_process(delta):
 	
 	
 func hmd_catching_up_to():
-		var hmd_local_pos = hmd.global_transform.origin - global_transform.origin
-#	if hmd.global_transform.basis.y.cross(Vector3.UP).length() > angle_for_angled_hmd:
-#		if Vector2(hmd_local_pos.x,hmd_local_pos.z).length() > max_range_from_angled_hmd:
-#			 catching_up_move = - Vector3(hmd_local_pos.x,0,hmd_local_pos.z).normalized()
-#		else:
-#			catching_up_move = Vector3.ZERO
-#
-#	else:
+	var hmd_local_pos = hmd.global_transform.origin - global_transform.origin
+	if hmd.global_transform.basis.y.cross(Vector3.UP).length() > angle_for_angled_hmd:
+		if Vector2(hmd_local_pos.x,hmd_local_pos.z).length() > max_range_from_angled_hmd:
+			 catching_up_move = - Vector3(hmd_local_pos.x,0,hmd_local_pos.z).normalized()
+		else:
+			catching_up_move = Vector3.ZERO
+
+	else:
 		if Vector2(hmd_local_pos.x,hmd_local_pos.z).length() > max_range_from_flat_hmd:
 			catching_up_move = - Vector3(hmd_local_pos.x,0,hmd_local_pos.z).normalized()
 		else:
 			catching_up_move = Vector3.ZERO
-			last_valid_hmd_height = hmd_local_pos.y
-		if catching_up_move.length() > 0:
-			is_catching_up_to_hmd = true
-#			print("catching up move:" + String(catching_up_move) +"hmd local pos :"+ String(hmd_local_pos))
-		else:
-			catching_up_move = Vector3.ZERO #repetition
-			is_catching_up_to_hmd = false
+			last_valid_hmd_height = (hmd.global_transform.origin - global_transform.origin).y 
+	if catching_up_move.length() > 0:
+		is_catching_up_to_hmd = true
+		print("catching up move:" + String(catching_up_move) +"hmd local pos :"+ String(hmd_local_pos))
+	else:
+		catching_up_move = Vector3.ZERO #repetition
+		last_valid_hmd_height = (hmd.global_transform.origin - global_transform.origin).y #repetition
+		is_catching_up_to_hmd = false
 	
 	
 

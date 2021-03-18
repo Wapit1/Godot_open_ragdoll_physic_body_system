@@ -16,21 +16,29 @@ export var dead_zone = 0.5 # originally 0.125
 var dead_zone_epsilon = 0.8
 export var smooth_turn_speed := 90.0;
 export var click_turn_angle := 45.0; 
-export var max_distance_from_head_collider : float = 1
+export var max_distance_from_head_collider : float = 2
 
+var is_head_stuck := false
+
+func _ready():
+	offset = hmd.global_transform.origin - track_spatial.global_transform.origin 
 
 func _physics_process(delta):
 #	 for when the hip is catching up to hmd
-	if hip.is_catching_up_to_hmd && hip.input_direction.length() <= 0:
+	
+	if (head_collider.global_transform.origin - hmd.global_transform.origin).length() > max_distance_from_head_collider:
+		is_head_stuck = true
+#		is_following = false
+#
+		print("head colliding, no hmd following body diff:" + String(head_collider.global_transform.origin - hmd.global_transform.origin))
+	elif hip.is_catching_up_to_hmd && hip.input_direction.length() <= 0:
 		is_following = false
 #		recalculate offset
-		offset = hmd.global_transform.origin - track_spatial.global_transform.origin 
-	elif (head_collider.global_transform.origin - global_transform.origin).length() > max_distance_from_head_collider:
-		is_following = false
-		
-		print("head colliding, no hmd following body")
+		offset = (global_transform.origin - track_spatial.global_transform.origin) * Vector3(1,0,1)
+	
 	else:
 		is_following = true
+		is_head_stuck = false
 	
 	#function from the oculus quest toolkit with a few replacement due to a different structure
 	var dlr = -right_controller.axis[0]

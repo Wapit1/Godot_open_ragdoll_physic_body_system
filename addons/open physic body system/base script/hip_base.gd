@@ -21,7 +21,7 @@ var previous_move : = Vector3.ZERO
 export var forward_step_length : float = 5
 #export var backward_step_length : float = 2
 export var side_step_length : float = 4
-export var step_length_divider : float = 10
+
 
 export var is_using_basic_locomotion :bool = true
 export var is_using_sphere_locomotion : bool = true
@@ -56,7 +56,7 @@ func _physics_process(delta):
 		stabilizing_sphere.target_rot = move_direction.rotated(Vector3.UP,PI/2)*sphere_speed
 	
 func feet_locomotion(delta):
-	var move : Vector3 = move_direction * Vector3(side_step_length, 0, forward_step_length) * target_height / step_length_divider
+	var move : Vector3 = move_direction * Vector3(side_step_length, 0, forward_step_length) 
 	var v_h = Vector3(0,-target_height,0)
 	
 	

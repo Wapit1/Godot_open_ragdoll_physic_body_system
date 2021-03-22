@@ -16,7 +16,7 @@ export var dead_zone = 0.5 # originally 0.125
 var dead_zone_epsilon = 0.8
 export var smooth_turn_speed := 90.0;
 export var click_turn_angle := 45.0; 
-export var max_distance_from_head_collider : float = 2
+export var max_distance_from_head_collider : float = 10
 
 var is_head_stuck := false
 

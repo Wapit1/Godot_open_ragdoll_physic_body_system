@@ -11,8 +11,8 @@ onready var body : RigidBody = get_node(body_p)
 export var is_stable : bool = false
 
 var is_grabbing := false
-var grab_obj := []
-var grab_joint := []
+var grabbed_obj : Node 
+var grab_joint :Node
 
 # coords and basis for the joint and PID controller to target
 export var target_pos := Vector3.ZERO
@@ -50,7 +50,10 @@ export var damping := 5
 
 #if you want to have offset from the instructed posistion, 
 #due note that the offset between the node a and node b is added to insure that the local pos correspond with the actual local pos
-export var offset := Vector3.ZERO
+export var manual_offset := Vector3.ZERO
+var offset  := Vector3.ZERO
+
+var offset_from_grabbed_obj
 
 func _ready():
 	if body == null:
@@ -73,7 +76,7 @@ func _ready():
 		pos_joint.set("linear_spring_z/damping",damping)
 		
 #		the offset between the node a(body) and node b(self) is added to insure that the local pos correspond with the actual local pos
-		offset = body.global_transform.origin - self.global_transform.origin + offset
+		offset = body.global_transform.origin - self.global_transform.origin + manual_offset
 		
 #		disable the linear_limit if no max_lenght is set,
 #		note that if you are using a max_lenght you are not force to have a joint linear limit
@@ -90,39 +93,63 @@ func _ready():
 func grab():
 #	 add the function of grabbing to allow for both hand and feet grabbing with a single script insuring consistant behavior between the two
 	if get_colliding_bodies().size() > 1:
+#		add priority
 		print("too many body")
 	elif get_colliding_bodies().size() > 0:
 		var obj = get_colliding_bodies()[0]
+		grab_obj(obj)
+#		
+
 		
-#		if the object is static and we want a perfect grab, we make the rigidbody go static as to not have offset when push and pulled around
-		if obj is StaticBody:
+#		grab_obj.append(obj)
+		
+func grab_obj(obj_to_grab):
+		print(obj_to_grab)
+		if obj_to_grab is StaticBody || obj_to_grab is KinematicBody:
+#			if the object is static and we want a perfect grab, we make the rigidbody go static as to not have offset when push and pulled around
 			mode = MODE_KINEMATIC
+			offset_from_grabbed_obj = obj_to_grab.global_transform.origin - self.global_transform.origin
 #			print("static grabbing")
 		else:
+			pos_joint.set_node_b(get_path_to(obj_to_grab))
+#			offset = body.global_transform.origin - self.global_transform.origin + manual_offset
+			offset_from_grabbed_obj = obj_to_grab.global_transform.origin - self.global_transform.origin
+			mode = MODE_KINEMATIC
+			
 			var joint := Generic6DOFJoint.new()
 			self.add_child(joint)
 			joint.global_transform = global_transform
 			joint.set_node_a(self.get_path())
-			joint.set_node_b(obj.get_path())
-			grab_joint.append(joint)
+			joint.set_node_b(obj_to_grab.get_path())
+			grab_joint = joint
+			
+		
 #			print("joint grabbing")
 		is_grabbing = true
-		
-#		grab_obj.append(obj)
-		
-		
+		grabbed_obj = obj_to_grab
 
 func drop():
-	if mode == MODE_KINEMATIC:
-		mode = MODE_RIGID
-	
-	for j in grab_joint:
-		j.queue_free()
-		grab_joint.erase(j)
+	if grab_joint != null:
+		grab_joint.queue_free()
+		grab_joint = null
 	is_grabbing = false
-
+	grabbed_obj = null
+	if mode == MODE_KINEMATIC:
+		global_transform.origin = body.global_transform.origin + target_pos + offset
+		mode = MODE_RIGID
+	if pos_joint != null && has_method("grip_start"):
+		if get_node(pos_joint.get_node_b()) != self:
+			pos_joint.set_node_b(get_path_to(self))
+			offset = body.global_transform.origin - self.global_transform.origin + manual_offset
+	
+	
+	
+	
 func _physics_process(delta):
 			#position
+			if mode == MODE_KINEMATIC:
+				global_transform.origin = grabbed_obj.global_transform.origin + offset_from_grabbed_obj
+				global_transform.basis = target_basis
 			if !is_stable:
 				target_pos += offset
 			
@@ -134,29 +161,33 @@ func _physics_process(delta):
 			
 #			print(target_pos)
 			#rotation
-			if is_stabilizing_rotation:
-				#restore angular velocity to 0
-				var correction_to_zero = PID(-angular_velocity,delta,0)
-				add_torque(correction_to_zero)
-				#rotation
-			if is_targeting_basis:
-				var error_target :Vector3 = - target_basis.z.cross(transform.basis.z)
-				var correction_to_target = PID(error_target,delta,1)
-				add_torque(correction_to_target)
-				#roll
-				var error_roll : Vector3 
-				var cross_p_roll :Vector3 = target_basis.x.cross(transform.basis.x)
-				if target_basis.x.x > 0 && target_basis.y.y > 0 || target_basis.z.z > 0:
-					if cross_p_roll.z >= 0 :
-						error_roll = transform.basis.z * - cross_p_roll.length()
+			var node_to_rot = self
+			if is_grabbing:
+				node_to_rot  = grabbed_obj
+			if node_to_rot.has_method("add_torque"):
+				if is_stabilizing_rotation:
+					#restore angular velocity to 0
+					var correction_to_zero = PID(-angular_velocity,delta,0)
+					node_to_rot.add_torque(correction_to_zero)
+					#rotation
+				if is_targeting_basis:
+					var error_target :Vector3 = - target_basis.z.cross(transform.basis.z)
+					var correction_to_target = PID(error_target,delta,1)
+					node_to_rot.add_torque(correction_to_target)
+					#roll
+					var error_roll : Vector3 
+					var cross_p_roll :Vector3 = target_basis.x.cross(transform.basis.x)
+					if target_basis.x.x > 0 && target_basis.y.y > 0 || target_basis.z.z > 0:
+						if cross_p_roll.z >= 0 :
+							error_roll = transform.basis.z * - cross_p_roll.length()
+						else:
+							error_roll = transform.basis.z *  cross_p_roll.length()
 					else:
-						error_roll = transform.basis.z *  cross_p_roll.length()
-				else:
-					if cross_p_roll.z >= 0 :
-						error_roll = transform.basis.z * cross_p_roll.length()
-					else:
-						error_roll = transform.basis.z * - cross_p_roll.length()
-				add_torque(PID(error_roll,delta,2))
+						if cross_p_roll.z >= 0 :
+							error_roll = transform.basis.z * cross_p_roll.length()
+						else:
+							error_roll = transform.basis.z * - cross_p_roll.length()
+					node_to_rot.add_torque(PID(error_roll,delta,2))
 
 
 

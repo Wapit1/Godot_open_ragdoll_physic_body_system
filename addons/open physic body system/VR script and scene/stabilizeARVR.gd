@@ -39,6 +39,9 @@ func _physics_process(delta):
 	else:
 		is_following = true
 		is_head_stuck = false
+		
+		
+		
 	
 	#function from the oculus quest toolkit with a few replacement due to a different structure
 	var dlr = -right_controller.axis[0]

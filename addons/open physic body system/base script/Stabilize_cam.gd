@@ -41,6 +41,8 @@ func _physics_process(delta):
 			global_target_pos += pos
 		
 		global_target_pos = global_target_pos / average_pos_array.size()
+		
+		
 		if hip.input_direction.length() > 0:
 			
 			

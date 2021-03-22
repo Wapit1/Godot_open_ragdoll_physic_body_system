@@ -15,6 +15,7 @@ export var vertical_speed : float = 3
 # radian angle to concider the hmd as angled
 export var angle_for_angled_hmd : float = 0.5
 export var max_range_from_flat_hmd : float = 2
+export var min_range_from_flat_hmd : float = 0.1
 export var max_range_from_angled_hmd : float = 5
 var is_catching_up_to_hmd : bool = false
 var catching_up_move := Vector3.ZERO 
@@ -118,9 +119,14 @@ func hmd_catching_up_to():
 	else:
 		if Vector2(hmd_local_pos.x,hmd_local_pos.z).length() > max_range_from_flat_hmd:
 			catching_up_move = - Vector3(hmd_local_pos.x,0,hmd_local_pos.z).normalized()
+			
+		elif Vector2(hmd_local_pos.x,hmd_local_pos.z).length() > min_range_from_flat_hmd && is_catching_up_to_hmd:
+			catching_up_move = - Vector3(hmd_local_pos.x,0,hmd_local_pos.z).normalized()
 		else:
 			catching_up_move = Vector3.ZERO
 			last_valid_hmd_height = (hmd.global_transform.origin - global_transform.origin).y 
+		
+			
 	if catching_up_move.length() > 0:
 		is_catching_up_to_hmd = true
 		print("catching up move:" + String(catching_up_move) +"hmd local pos :"+ String(hmd_local_pos))

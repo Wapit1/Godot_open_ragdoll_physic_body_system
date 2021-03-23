@@ -69,7 +69,6 @@ height = 0.2
 
 [node name="left_hand" type="RigidBody" parent="."]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -4.76085, 2.72621, 0 )
-mode = 1
 mass = 0.1
 gravity_scale = 0.0
 continuous_cd = true
@@ -78,6 +77,8 @@ contact_monitor = true
 can_sleep = false
 script = ExtResource( 1 )
 body_p = NodePath("../head_collider")
+stiffness = 200
+damping = 10
 controller_p = NodePath("../ARVROrigin/left_controller")
 
 [node name="MeshInstance3" type="MeshInstance" parent="left_hand"]
@@ -102,6 +103,8 @@ contact_monitor = true
 can_sleep = false
 script = ExtResource( 1 )
 body_p = NodePath("../head_collider")
+stiffness = 200
+damping = 10
 controller_p = NodePath("../ARVROrigin/right_controller")
 
 [node name="MeshInstance3" type="MeshInstance" parent="right_hand"]
@@ -119,7 +122,6 @@ material/0 = null
 [node name="hip" type="RigidBody" parent="."]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 5, 0 )
 collision_layer = 2
-mode = 1
 mass = 5.0
 continuous_cd = true
 contacts_reported = 10
@@ -145,12 +147,13 @@ material/0 = null
 
 [node name="head_collider" type="RigidBody" parent="."]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 10, 0 )
-mode = 1
 continuous_cd = true
 contacts_reported = 2
 contact_monitor = true
 script = ExtResource( 7 )
 body_p = NodePath("../hip")
+stiffness = 400
+damping = 20
 hmd_p = NodePath("../ARVROrigin/hmd")
 
 [node name="CollisionShape" type="CollisionShape" parent="head_collider"]
@@ -172,7 +175,6 @@ material/0 = null
 [node name="left_foot" type="RigidBody" parent="."]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -2, 0.5, 0 )
 collision_layer = 0
-mode = 1
 continuous_cd = true
 contacts_reported = 1
 contact_monitor = true
@@ -189,7 +191,6 @@ material/0 = null
 [node name="right_foot" type="RigidBody" parent="."]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 2, 0.5, 0 )
 collision_layer = 0
-mode = 1
 continuous_cd = true
 contacts_reported = 1
 contact_monitor = true
@@ -206,7 +207,6 @@ material/0 = null
 [node name="stabilizing_sphere" type="RigidBody" parent="."]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0 )
 collision_layer = 0
-mode = 1
 physics_material_override = SubResource( 11 )
 continuous_cd = true
 contacts_reported = 1
@@ -214,6 +214,8 @@ contact_monitor = true
 script = ExtResource( 6 )
 body_p = NodePath("../hip")
 is_targeting_basis = false
+stiffness = 700
+damping = 50
 PID_rolling = Vector3( 1000, 0, 500 )
 
 [node name="CollisionShape" type="CollisionShape" parent="stabilizing_sphere"]

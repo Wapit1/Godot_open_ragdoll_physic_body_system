@@ -48,8 +48,8 @@ export var max_length := Vector3.INF
 export var is_an_hard_limit : bool = false
 
 # joint force (stiffness) and damping, note that the damping is what smooths out the impulse, thus reducing the pendulum effect
-export var stiffness :float= 100
-export var damping :float= 5
+export var stiffness := 100
+export var damping := 5
 
 #if you want to have offset from the instructed posistion, 
 #due note that the offset between the node a and node b is added to insure that the local pos correspond with the actual local pos
@@ -165,16 +165,14 @@ func create_new_pos_joint(new_node_b):
 		new_joint.set("linear_spring_y/damping",damping)
 		new_joint.set("linear_spring_z/damping",damping)
 		
-		new_joint.set_node_a("../" + get_path_to(body))
-		new_joint.set_node_b("../" + get_path_to(new_node_b))
-		new_joint.name = self.get_name() + "_joint"
+		new_joint.set_node_a(get_path_to(body))
+		new_joint.set_node_b(get_path_to(new_node_b))
 		
-		print(String(new_joint.get_name()) + ":" + String(new_joint.get_node_a())  + "   "+ String(new_joint.get_node_b()))
 		
 #		the offset between the node a(body) and node b(self or grabbed object) is added to insure that the local pos correspond with the actual local pos
 		offset = body.global_transform.origin - self.global_transform.origin + manual_offset
-		if pos_joint != null:
-			pos_joint.queue_free()
+#		if pos_joint != null:
+#			pos_joint.queue_free()
 		pos_joint = new_joint
 		new_joint.transform = self.transform
 		add_child(new_joint)

@@ -19,7 +19,7 @@ export var target_pos := Vector3.ZERO
 export var target_basis : Basis
 
 #reffer to the 6DOFJoint that allows the rigidbody to move
-onready var pos_joint : Generic6DOFJoint = get_node("Generic6DOFJoint")
+onready var pos_joint : Generic6DOFJoint 
 
 #to enable the rotation
 export var is_stabilizing_rotation : bool = true
@@ -43,6 +43,9 @@ var integral_r   := Vector3.ZERO
 
 # set the maximum lenght the joint can push, usefull if you don't want to have a limit for exemple of arm lenght
 export var max_length := Vector3.INF
+# determine if the joint as a max lenght the extremities can be pulled to
+#for exemple you could have an hand that cannot be targetted farther than 1 meter away, but could be pulled away from it limit, creating a slingshot effect
+export var is_an_hard_limit : bool = false
 
 # joint force (stiffness) and damping, note that the damping is what smooths out the impulse, thus reducing the pendulum effect
 export var stiffness := 100
@@ -56,39 +59,13 @@ var offset  := Vector3.ZERO
 var offset_from_grabbed_obj
 
 func _ready():
-	if body == null:
-		body = get_node(pos_joint.get_node_a())
+	print(self.get_name())
+	create_new_pos_joint(self)
 	
-	if pos_joint != null:
-		
-		pos_joint.set("linear_spring_x/enabled",true)
-		
-		pos_joint.set("linear_spring_y/enabled",true)
-		
-		pos_joint.set("linear_spring_z/enabled",true)
-		
-		pos_joint.set("linear_spring_x/stiffness",stiffness)
-		pos_joint.set("linear_spring_y/stiffness",stiffness)
-		pos_joint.set("linear_spring_z/stiffness",stiffness)
-
-		pos_joint.set("linear_spring_x/damping",damping)
-		pos_joint.set("linear_spring_y/damping",damping)
-		pos_joint.set("linear_spring_z/damping",damping)
-		
-#		the offset between the node a(body) and node b(self) is added to insure that the local pos correspond with the actual local pos
-		offset = body.global_transform.origin - self.global_transform.origin + manual_offset
-		
-#		disable the linear_limit if no max_lenght is set,
-#		note that if you are using a max_lenght you are not force to have a joint linear limit
-#		thus you could have an hand that cannot be targetted farther than 1 meter away, but could be pulled away from it limit, creating a slingshot effect
-		if max_length.length() < INF:
-			pos_joint.set("linear_limit_x/enabled",false)
-			pos_joint.set("linear_limit_y/enabled",false)
-			pos_joint.set("linear_limit_z/enabled",false)
+	
 	
 		
-	else:
-		print("pos_joint is null ")
+	
 
 func grab():
 #	 add the function of grabbing to allow for both hand and feet grabbing with a single script insuring consistant behavior between the two
@@ -104,23 +81,31 @@ func grab():
 #		grab_obj.append(obj)
 		
 func grab_obj(obj_to_grab):
-		print(obj_to_grab)
+		print(obj_to_grab.get_name())
 		if obj_to_grab is StaticBody || obj_to_grab is KinematicBody:
 #			if the object is static and we want a perfect grab, we make the rigidbody go static as to not have offset when push and pulled around
 			mode = MODE_KINEMATIC
 			offset_from_grabbed_obj = obj_to_grab.global_transform.origin - self.global_transform.origin
 #			print("static grabbing")
 		else:
-			pos_joint.set_node_b(get_path_to(obj_to_grab))
-#			offset = body.global_transform.origin - self.global_transform.origin + manual_offset
+#			create_new_pos_joint(obj_to_grab)
 			offset_from_grabbed_obj = obj_to_grab.global_transform.origin - self.global_transform.origin
+			print(get_node(pos_joint.get_node_b()).get_name())
 			mode = MODE_KINEMATIC
 			
+			
+#			joint created to make the hand doesn't collide with the grabbed object
 			var joint := Generic6DOFJoint.new()
 			self.add_child(joint)
 			joint.global_transform = global_transform
 			joint.set_node_a(self.get_path())
 			joint.set_node_b(obj_to_grab.get_path())
+			joint.set("linear_limit_x/enabled",false)
+			joint.set("linear_limit_y/enabled",false)
+			joint.set("linear_limit_z/enabled",false)
+			joint.set("angular_limit_x/enabled",false)
+			joint.set("angular_limit_y/enabled",false)
+			joint.set("angular_limit_z/enabled",false)
 			grab_joint = joint
 			
 		
@@ -130,25 +115,76 @@ func grab_obj(obj_to_grab):
 
 func drop():
 	if grab_joint != null:
-		grab_joint.queue_free()
+		get_node(pos_joint.get_node_b()).queue_free()
 		grab_joint = null
-	is_grabbing = false
-	grabbed_obj = null
+		
+	if grabbed_obj != null:
+		grabbed_obj.queue_free()
+		grabbed_obj = null
 	if mode == MODE_KINEMATIC:
-		global_transform.origin = body.global_transform.origin + target_pos + offset
+#		global_transform.origin = body.global_transform.origin + target_pos + offset
 		mode = MODE_RIGID
-	if pos_joint != null && has_method("grip_start"):
-		if get_node(pos_joint.get_node_b()) != self:
-			pos_joint.set_node_b(get_path_to(self))
-			offset = body.global_transform.origin - self.global_transform.origin + manual_offset
+		sleeping = false
+	if pos_joint != null && has_method("grip_start") && is_grabbing:
+#		create_new_pos_joint(self)
+		pass
+	is_grabbing = false
 	
-	
-	
+func create_new_pos_joint(new_node_b):
+		var new_joint = Generic6DOFJoint.new()
+		
+#		enable the linear spring as it is the way we move the position of the hand relative to the body
+		new_joint.set("linear_spring_x/enabled",true)
+		new_joint.set("linear_spring_y/enabled",true)
+		new_joint.set("linear_spring_z/enabled",true)
+		
+#		disable angular limit so that the pid can handle the rotation
+		new_joint.set("angular_limit_x/enabled",false)
+		new_joint.set("angular_limit_y/enabled",false)
+		new_joint.set("angular_limit_z/enabled",false)
+		
+#		disable the linear_limit if no max_lenght is set,
+#		note that if you are using a max_lenght you are not forced to have a joint linear limit
+#		thus you could have an hand that cannot be targetted farther than 1 meter away, but could be pulled away from it limit, creating a slingshot effect
+		
+		new_joint.set("linear_limit_x/enabled",false)
+		new_joint.set("linear_limit_y/enabled",false)
+		new_joint.set("linear_limit_z/enabled",false)
+#		if is_an_hard_limit && max_length.length() > INF:
+#			new_joint.set("linear_limit_x/enabled",true)
+#			new_joint.set("linear_limit_y/enabled",true)
+#			new_joint.set("linear_limit_z/enabled",true)
+			
+#			 will need to add the linear limit value here to make hard limit work
+		
+		new_joint.set("linear_spring_x/stiffness",stiffness)
+		new_joint.set("linear_spring_y/stiffness",stiffness)
+		new_joint.set("linear_spring_z/stiffness",stiffness)
+
+		new_joint.set("linear_spring_x/damping",damping)
+		new_joint.set("linear_spring_y/damping",damping)
+		new_joint.set("linear_spring_z/damping",damping)
+		
+		new_joint.set_node_a(get_path_to(body))
+		new_joint.set_node_b(get_path_to(new_node_b))
+		
+		
+#		the offset between the node a(body) and node b(self or grabbed object) is added to insure that the local pos correspond with the actual local pos
+		offset = body.global_transform.origin - self.global_transform.origin + manual_offset
+#		if pos_joint != null:
+#			pos_joint.queue_free()
+		pos_joint = new_joint
+		new_joint.transform = self.transform
+		add_child(new_joint)
+#		
+		
+
+
 	
 func _physics_process(delta):
 			#position
 			if mode == MODE_KINEMATIC:
-				global_transform.origin = grabbed_obj.global_transform.origin + offset_from_grabbed_obj
+#				global_transform.origin = grabbed_obj.global_transform.origin - offset_from_grabbed_obj
 				global_transform.basis = target_basis
 			if !is_stable:
 				target_pos += offset

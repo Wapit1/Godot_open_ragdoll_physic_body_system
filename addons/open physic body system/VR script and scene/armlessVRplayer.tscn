@@ -93,20 +93,6 @@ transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1 )
 mesh = SubResource( 3 )
 material/0 = null
 
-[node name="Generic6DOFJoint" type="Generic6DOFJoint" parent="left_hand"]
-nodes/node_a = NodePath("../../head_collider")
-nodes/node_b = NodePath("..")
-collision/exclude_nodes = false
-linear_limit_x/enabled = false
-linear_spring_x/enabled = true
-angular_limit_x/enabled = false
-linear_limit_y/enabled = false
-linear_spring_y/enabled = true
-angular_limit_y/enabled = false
-linear_limit_z/enabled = false
-linear_spring_z/enabled = true
-angular_limit_z/enabled = false
-
 [node name="right_hand" type="RigidBody" parent="."]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 2.91242, 3.03229, 0 )
 mass = 0.1
@@ -132,20 +118,6 @@ shape = SubResource( 2 )
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1 )
 mesh = SubResource( 3 )
 material/0 = null
-
-[node name="Generic6DOFJoint" type="Generic6DOFJoint" parent="right_hand"]
-nodes/node_a = NodePath("../../head_collider")
-nodes/node_b = NodePath("..")
-collision/exclude_nodes = false
-linear_limit_x/enabled = false
-linear_spring_x/enabled = true
-angular_limit_x/enabled = false
-linear_limit_y/enabled = false
-linear_spring_y/enabled = true
-angular_limit_y/enabled = false
-linear_limit_z/enabled = false
-linear_spring_z/enabled = true
-angular_limit_z/enabled = false
 
 [node name="hip" type="RigidBody" parent="."]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 5, 0 )
@@ -188,22 +160,6 @@ hmd_p = NodePath("../ARVROrigin/hmd")
 transform = Transform( 1, 0, 0, 0, -1.62921e-07, -1, 0, 1, -1.62921e-07, 0, 0, 0 )
 shape = SubResource( 6 )
 
-[node name="Generic6DOFJoint" type="Generic6DOFJoint" parent="head_collider"]
-nodes/node_a = NodePath("../../hip")
-nodes/node_b = NodePath("..")
-linear_limit_x/enabled = false
-linear_limit_x/upper_distance = 1.0
-linear_limit_x/lower_distance = -1.0
-linear_spring_x/enabled = true
-linear_limit_y/enabled = false
-linear_limit_y/upper_distance = 1.0
-linear_limit_y/lower_distance = -1.0
-linear_spring_y/enabled = true
-linear_limit_z/enabled = false
-linear_limit_z/upper_distance = 1.0
-linear_limit_z/lower_distance = -1.0
-linear_spring_z/enabled = true
-
 [node name="MeshInstance" type="MeshInstance" parent="head_collider"]
 transform = Transform( 1, 0, 0, 0, -1.62921e-07, -1, 0, 1, -1.62921e-07, 0, 0, 0 )
 layers = 2
@@ -228,16 +184,6 @@ body_p = NodePath("../hip")
 [node name="CollisionShape" type="CollisionShape" parent="left_foot"]
 shape = SubResource( 9 )
 
-[node name="Generic6DOFJoint" type="Generic6DOFJoint" parent="left_foot"]
-nodes/node_a = NodePath("../../hip")
-nodes/node_b = NodePath("..")
-linear_limit_x/enabled = false
-linear_spring_x/enabled = true
-linear_limit_y/enabled = false
-linear_spring_y/enabled = true
-linear_limit_z/enabled = false
-linear_spring_z/enabled = true
-
 [node name="MeshInstance" type="MeshInstance" parent="left_foot"]
 mesh = SubResource( 10 )
 material/0 = null
@@ -253,16 +199,6 @@ body_p = NodePath("../hip")
 
 [node name="CollisionShape" type="CollisionShape" parent="right_foot"]
 shape = SubResource( 9 )
-
-[node name="Generic6DOFJoint" type="Generic6DOFJoint" parent="right_foot"]
-nodes/node_a = NodePath("../../hip")
-nodes/node_b = NodePath("..")
-linear_limit_x/enabled = false
-linear_spring_x/enabled = true
-linear_limit_y/enabled = false
-linear_spring_y/enabled = true
-linear_limit_z/enabled = false
-linear_spring_z/enabled = true
 
 [node name="MeshInstance" type="MeshInstance" parent="right_foot"]
 mesh = SubResource( 10 )
@@ -284,16 +220,6 @@ PID_rolling = Vector3( 1000, 0, 500 )
 
 [node name="CollisionShape" type="CollisionShape" parent="stabilizing_sphere"]
 shape = SubResource( 12 )
-
-[node name="Generic6DOFJoint" type="Generic6DOFJoint" parent="stabilizing_sphere"]
-nodes/node_a = NodePath("../../hip")
-nodes/node_b = NodePath("..")
-linear_limit_x/enabled = false
-linear_spring_x/enabled = true
-linear_limit_y/enabled = false
-linear_spring_y/enabled = true
-linear_limit_z/enabled = false
-linear_spring_z/enabled = true
 
 [node name="MeshInstance" type="MeshInstance" parent="stabilizing_sphere"]
 mesh = SubResource( 13 )

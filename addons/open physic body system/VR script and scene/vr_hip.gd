@@ -91,7 +91,8 @@ func _physics_process(delta):
 #	last_valid_hmd_height = (hmd.global_transform.origin - global_transform.origin).y 
 
 	if input_direction.length() <= 0:
-		hmd_catching_up_to()
+#		hmd_catching_up_to()
+		pass
 	else:
 		catching_up_move = Vector3.ZERO
 		is_catching_up_to_hmd = false
@@ -129,7 +130,7 @@ func hmd_catching_up_to():
 			
 	if catching_up_move.length() > 0:
 		is_catching_up_to_hmd = true
-#		print("catching up move:" + String(catching_up_move) +"hmd local pos :"+ String(hmd_local_pos))
+		print("catching up move:" + String(catching_up_move) +"hmd local pos :"+ String(hmd_local_pos))
 	else:
 		catching_up_move = Vector3.ZERO #repetition
 		last_valid_hmd_height = (hmd.global_transform.origin - global_transform.origin).y #repetition

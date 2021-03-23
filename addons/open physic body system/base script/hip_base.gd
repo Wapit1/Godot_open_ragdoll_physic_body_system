@@ -18,9 +18,9 @@ var upper_body_parts : Array = []
 var previous_move : = Vector3.ZERO
 
 
-export var forward_step_length : float = 2
+export var forward_step_length : float = 5
 #export var backward_step_length : float = 2
-export var side_step_length : float = 1
+export var side_step_length : float = 4
 
 
 export var is_using_basic_locomotion :bool = true
@@ -128,7 +128,7 @@ func feet_locomotion(delta):
 						fartest_foot = foot
 						print(feet.find(get_path_to(fartest_foot)))
 			active_feet_index[active_feet_index.find(active_foot)] = feet.find(get_path_to(fartest_foot))
-#		print("reset_new_active_feet_index:" + String(active_feet_index))
+		print("reset_new_active_feet_index:" + String(active_feet_index))
 	
 	previous_move = move
 func change_active_feet_index(num):

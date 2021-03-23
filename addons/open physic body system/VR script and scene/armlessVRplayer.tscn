@@ -77,8 +77,8 @@ contact_monitor = true
 can_sleep = false
 script = ExtResource( 1 )
 body_p = NodePath("../head_collider")
-stiffness = 200
-damping = 10
+stiffness = 400
+damping = 20
 controller_p = NodePath("../ARVROrigin/left_controller")
 
 [node name="MeshInstance3" type="MeshInstance" parent="left_hand"]
@@ -117,8 +117,8 @@ contact_monitor = true
 can_sleep = false
 script = ExtResource( 1 )
 body_p = NodePath("../head_collider")
-stiffness = 200
-damping = 10
+stiffness = 400
+damping = 20
 controller_p = NodePath("../ARVROrigin/right_controller")
 
 [node name="MeshInstance3" type="MeshInstance" parent="right_hand"]
@@ -150,7 +150,7 @@ angular_limit_z/enabled = false
 [node name="hip" type="RigidBody" parent="."]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 5, 0 )
 collision_layer = 2
-mass = 5.0
+mass = 10.0
 continuous_cd = true
 contacts_reported = 10
 can_sleep = false

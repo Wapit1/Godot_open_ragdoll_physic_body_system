@@ -164,6 +164,7 @@ shape = SubResource( 7 )
 
 [node name="RigidBody5" type="RigidBody" parent="rigidbodies"]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -46.5297, 11.5691, 24.0025 )
+mass = 0.1
 
 [node name="MeshInstance" type="MeshInstance" parent="rigidbodies/RigidBody5"]
 mesh = SubResource( 8 )

@@ -59,6 +59,8 @@ var offset  := Vector3.ZERO
 var original_offset := Vector3.ZERO
 
 var offset_from_grabbed_obj
+var kin_follow_node : Spatial
+
 
 var original_collision_layer : int
 var original_collision_mask : int
@@ -129,19 +131,31 @@ func grab_obj(obj_to_grab):
 			offset_from_grabbed_obj = obj_to_grab.global_transform.origin - self.global_transform.origin
 #			print("static grabbing")
 		else:
+			pos_joint.global_transform.basis = body.global_transform.basis
 			pos_joint.set_node_b("../" +get_path_to(obj_to_grab))
 			offset = body.global_transform.origin - self.global_transform.origin + manual_offset
 			offset_from_grabbed_obj = self.global_transform.origin - obj_to_grab.global_transform.origin
+			
+#			Follow node is created when there is no grab point
+			var new_follow_node = Position3D.new()
+			obj_to_grab.add_child(new_follow_node)
+			new_follow_node.global_transform.origin = self.global_transform.origin 
+			new_follow_node.global_transform.basis = self.global_transform.basis
+			
+			kin_follow_node = new_follow_node
+			
 			mode = MODE_KINEMATIC
 			original_collision_layer = collision_layer 
 			original_collision_mask = collision_mask
 			collision_layer = 0
 			collision_mask = 0
 			
-			stiffness = 100
-			damping = 5
-			configure_pos_joint()
 			
+#			testing line
+#			stiffness = 100
+#			damping = 5
+#			configure_pos_joint()
+#
 #			
 
 
@@ -161,7 +175,10 @@ func drop():
 	if grab_joint != null:
 		grab_joint.queue_free()
 		grab_joint = null
-	
+	if kin_follow_node != null:
+#		only queue_free if it it a temporary position 3D, as we went to keep the grab point which are area3D
+		if kin_follow_node is Position3D:
+			kin_follow_node.queue_free()
 	grabbed_obj = null
 	if mode == MODE_KINEMATIC:
 		global_transform.origin = body.global_transform.origin + target_pos + offset
@@ -171,7 +188,7 @@ func drop():
 			
 			pos_joint.global_transform.basis = body.global_transform.basis
 			pos_joint.set_node_b("../" + get_path_to(self))
-			offset = original_offset
+			offset = body.global_transform.origin - self.global_transform.origin + manual_offset
 			collision_layer = original_collision_layer
 			collision_mask = original_collision_mask
 	
@@ -181,8 +198,9 @@ func drop():
 func _physics_process(delta):
 			#position
 			if mode == MODE_KINEMATIC:
-				global_transform.origin = grabbed_obj.global_transform.origin + offset_from_grabbed_obj
-				global_transform.basis = grabbed_obj.global_transform.basis
+				if kin_follow_node != null:
+					global_transform = kin_follow_node.global_transform
+				
 			if !is_stable:
 				target_pos += offset
 			

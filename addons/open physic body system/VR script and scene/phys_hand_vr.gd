@@ -6,14 +6,15 @@ onready var controller : = get_node(controller_p)
 
 
 func _ready():
+	add_to_group("hand")
 	
 	#	controller.connect("trigger_start",self,"trigger_start")
 	##	controller.connect("trigger_while",self,"trigger_while")
 	#	controller.connect("trigger_end",self,"trigger_end")
 	
-		controller.connect("grip_start",self,"grip_start")
-	#	controller.connect("grip_while",self,"grip_while")
-		controller.connect("grip_end",self,"grip_end")
+	controller.connect("grip_start",self,"grip_start")
+	#controller.connect("grip_while",self,"grip_while")
+	controller.connect("grip_end",self,"grip_end")
 	#
 	#	controller.connect("farb_start",self,"farb_start")
 	#	controller.connect("farb_end",self,"farb_end")

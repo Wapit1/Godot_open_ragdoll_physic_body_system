@@ -58,9 +58,9 @@ export var manual_offset := Vector3.ZERO
 var offset  := Vector3.ZERO
 var original_offset := Vector3.ZERO
 
-var offset_from_grabbed_obj
+var offset_from_grabbed_obj := Vector3.ZERO
 var kin_follow_node : Spatial
-
+var can_grab_array := []
 
 var original_collision_layer : int
 var original_collision_mask : int
@@ -111,12 +111,55 @@ func configure_pos_joint():
 		print("pos_joint is null for" + self.get_name())
 
 func grab():
+	
 #	 add the function of grabbing to allow for both hand and feet grabbing with a single script insuring consistant behavior between the two
-	if get_colliding_bodies().size() > 1:
-#		add priority system here
-		print("too many body")
-	elif get_colliding_bodies().size() > 0:
-		var obj = get_colliding_bodies()[0]
+	var obj_to_grab : Spatial
+	var grabable_array = []
+	
+	for node in can_grab_array :
+		grabable_array.append(node)
+	for node in get_colliding_bodies():
+		grabable_array.append(node)
+	print( "grabable array of " + self.get_name() + " :" + String(grabable_array))
+	if grabable_array.size() > 1:
+		var current_priority : float
+		var highest_priority : float = -100
+		var approved_node := []
+		for node in grabable_array:
+			current_priority = 0
+			if node == self:
+				print("something is wrong " + self.get_name() + " is trying to grab itself")
+			elif node.is_in_group("grab_point"):
+				current_priority = node.grabbing_priority
+			if node is RigidBody:
+				if self.is_in_group("hand"):
+					current_priority = 1
+				else:
+					current_priority = -1
+			if current_priority  > highest_priority:
+				highest_priority = current_priority
+				approved_node.clear()
+				approved_node.append(node)
+			elif current_priority == highest_priority:
+				approved_node.append(node)
+#			useless
+#			elif highest_priority <= 0:
+#				highest_priority = 0
+#				approved_node.append(self)
+		if approved_node.size() > 1:
+			var closest_distance : float = 1000
+			var closest_node : Spatial
+			for node in approved_node:
+				if (node.global_transform.origin - global_transform.origin).length() < closest_distance:
+					closest_distance = (node.global_transform.origin - global_transform.origin).length()
+					closest_node = self
+			obj_to_grab = closest_node
+		else:
+			obj_to_grab = approved_node[0]
+		grab_obj(obj_to_grab)
+		
+	elif grabable_array.size() == 1 && grabable_array[0] != self:
+		var obj = grabable_array[0]
 		grab_obj(obj)
 #		
 
@@ -124,39 +167,44 @@ func grab():
 #		grab_obj.append(obj)
 		
 func grab_obj(obj_to_grab):
-		print(obj_to_grab)
-		if obj_to_grab is StaticBody || obj_to_grab is KinematicBody:
-#			if the object is static and we want a perfect grab, we make the rigidbody go static as to not have offset when push and pulled around
-			mode = MODE_KINEMATIC
-			offset_from_grabbed_obj = obj_to_grab.global_transform.origin - self.global_transform.origin
-#			print("static grabbing")
-		else:
-			pos_joint.global_transform.basis = body.global_transform.basis
-			pos_joint.set_node_b("../" +get_path_to(obj_to_grab))
-			offset = body.global_transform.origin - self.global_transform.origin + manual_offset
-			offset_from_grabbed_obj = self.global_transform.origin - obj_to_grab.global_transform.origin
-			
-#			Follow node is created when there is no grab point
-			var new_follow_node = Position3D.new()
-			obj_to_grab.add_child(new_follow_node)
-			new_follow_node.global_transform.origin = self.global_transform.origin 
-			new_follow_node.global_transform.basis = self.global_transform.basis
-			
-			kin_follow_node = new_follow_node
-			
-			mode = MODE_KINEMATIC
-			original_collision_layer = collision_layer 
-			original_collision_mask = collision_mask
-			collision_layer = 0
-			collision_mask = 0
-			
-			
-#			testing line
-#			stiffness = 100
-#			damping = 5
-#			configure_pos_joint()
-#
-#			
+	if obj_to_grab == self:
+		print(self.get_name() + " tried to grab itself")
+		return
+	if obj_to_grab.get_parent() == self.get_parent():
+		print(self.get_name() + " tried to grab a body part of its body")
+		return
+	
+	print(self.get_name() + " is grabbing " + obj_to_grab.get_name() + "(" + String(obj_to_grab.get_instance_id()) + ")")
+
+	pos_joint.global_transform.basis = body.global_transform.basis
+	
+	offset = body.global_transform.origin - self.global_transform.origin + manual_offset
+	
+	
+#	 Follow node is created when there is no grab point
+	if obj_to_grab.is_in_group("grab_point"):
+		pos_joint.set_node_b("../" +get_path_to(obj_to_grab.get_parent()))
+		kin_follow_node = obj_to_grab
+		offset_from_grabbed_obj = self.global_transform.origin - obj_to_grab.global_transform.origin
+		
+	
+	else:
+		pos_joint.set_node_b("../" +get_path_to(obj_to_grab))
+		
+		var new_follow_node = Position3D.new()
+		obj_to_grab.add_child(new_follow_node)
+		new_follow_node.global_transform.origin = self.global_transform.origin 
+		new_follow_node.global_transform.basis = self.global_transform.basis
+		kin_follow_node = new_follow_node
+	
+	mode = MODE_KINEMATIC
+	original_collision_layer = collision_layer 
+	original_collision_mask = collision_mask
+	collision_layer = 0
+	collision_mask = 0
+	
+	is_grabbing = true
+	grabbed_obj = obj_to_grab
 
 
 #			var joint := Generic6DOFJoint.new()
@@ -166,12 +214,12 @@ func grab_obj(obj_to_grab):
 #			joint.set_node_b("../" +obj_to_grab.get_path())
 #			grab_joint = joint
 #
-		
+	
 #			print("joint grabbing")
-		is_grabbing = true
-		grabbed_obj = obj_to_grab
+
 
 func drop():
+	print(self.get_name() + " is dropping")
 	if grab_joint != null:
 		grab_joint.queue_free()
 		grab_joint = null
@@ -181,10 +229,10 @@ func drop():
 			kin_follow_node.queue_free()
 	grabbed_obj = null
 	if mode == MODE_KINEMATIC:
-		global_transform.origin = body.global_transform.origin + target_pos + offset
+#		global_transform.origin = body.global_transform.origin - target_pos + offset
 		mode = MODE_RIGID
-	if pos_joint != null && has_method("grip_start") && is_grabbing:
-		if get_node(pos_joint.get_node_b()) != self:
+	if pos_joint != null && self.is_in_group("hand") && is_grabbing:
+		if pos_joint.get_node(pos_joint.get_node_b()) != self:
 			
 			pos_joint.global_transform.basis = body.global_transform.basis
 			pos_joint.set_node_b("../" + get_path_to(self))
@@ -199,8 +247,12 @@ func _physics_process(delta):
 			#position
 			if mode == MODE_KINEMATIC:
 				if kin_follow_node != null:
-					global_transform = kin_follow_node.global_transform
-				
+					global_transform.origin = kin_follow_node.global_transform.origin + offset_from_grabbed_obj
+					global_transform.basis = kin_follow_node.global_transform.basis
+					if offset_from_grabbed_obj.length() > 0:
+						offset_from_grabbed_obj /= delta/10 
+					elif offset_from_grabbed_obj.length() != 0:
+						offset_from_grabbed_obj = Vector3.ZERO
 			if !is_stable:
 				target_pos += offset
 			

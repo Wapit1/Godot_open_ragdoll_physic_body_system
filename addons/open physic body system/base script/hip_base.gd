@@ -112,7 +112,7 @@ func feet_locomotion(delta):
 #				print(active_feet_index)
 
 	if active_feet_index.has(feet.size()+1) && previous_move != move && previous_move.length() == 0 :
-		print("reset")
+#		print("reset")
 		for active_foot in active_feet_index:
 			var fartest_foot_index : int = 0
 			while active_feet_index.has(fartest_foot_index):
@@ -126,9 +126,9 @@ func feet_locomotion(delta):
 					
 					if (fartest_foot.transform.origin - transform.origin+ move).length() < (foot.transform.origin- transform.origin + move).length():
 						fartest_foot = foot
-						print(feet.find(get_path_to(fartest_foot)))
+#						print(feet.find(get_path_to(fartest_foot)))
 			active_feet_index[active_feet_index.find(active_foot)] = feet.find(get_path_to(fartest_foot))
-		print("reset_new_active_feet_index:" + String(active_feet_index))
+#		print("reset_new_active_feet_index:" + String(active_feet_index))
 	
 	previous_move = move
 func change_active_feet_index(num):
@@ -140,8 +140,8 @@ func change_active_feet_index(num):
 	while active_feet_index.has(attempt_new_active_foot):
 		attempt_new_active_foot = (attempt_new_active_foot + 1)% feet.size()
 	active_feet_index[num] = attempt_new_active_foot
-	
-	get_node(feet[active_feet_index[num]]).drop()
+	if get_node(feet[active_feet_index[num]]).is_grabbing:
+		get_node(feet[active_feet_index[num]]).drop()
 	
 #	print("swap_new_active_feet_index:" + String(active_feet_index))
 func drop_all():

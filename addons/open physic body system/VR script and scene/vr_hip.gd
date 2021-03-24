@@ -20,7 +20,7 @@ export var max_range_from_angled_hmd : float = 5
 var is_catching_up_to_hmd : bool = false
 var catching_up_move := Vector3.ZERO 
 var last_valid_hmd_height : float = 0
-
+var previous_pos : Vector3
 
 func _ready():
 	
@@ -90,12 +90,15 @@ func _physics_process(delta):
 #	this line is for testing purposes
 #	last_valid_hmd_height = (hmd.global_transform.origin - global_transform.origin).y 
 
-	if input_direction.length() <= 0:
+	if input_direction.length() <= 0 :
+#	&& (previous_pos*10).round() == (global_transform.origin*10).round():
 		hmd_catching_up_to()
 	else:
 		catching_up_move = Vector3.ZERO
 		is_catching_up_to_hmd = false
-		
+	
+	previous_pos = global_transform.origin
+	
 #	to be replaced with proper a
 #	if arvr_origin.is_head_stuck:
 #		input_direction = Vector3.ZERO 

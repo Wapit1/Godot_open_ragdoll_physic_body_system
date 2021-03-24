@@ -6,7 +6,7 @@
 [ext_resource path="res://addons/open physic body system/VR script and scene/vr_hip.gd" type="Script" id=4]
 [ext_resource path="res://addons/open physic body system/VR script and scene/stabilizeARVR.gd" type="Script" id=5]
 [ext_resource path="res://addons/open physic body system/base script/stabilizing_sphere.gd" type="Script" id=6]
-[ext_resource path="res://addons/open physic body system/torso.gd" type="Script" id=7]
+[ext_resource path="res://addons/open physic body system/VR script and scene/head_collider.tres.gd" type="Script" id=7]
 
 [sub_resource type="CubeMesh" id=1]
 size = Vector3( 1, 2, 2 )
@@ -76,7 +76,7 @@ contacts_reported = 10
 contact_monitor = true
 can_sleep = false
 script = ExtResource( 1 )
-body_p = NodePath("../head_collider")
+body_p = NodePath("../hip")
 stiffness = 400
 damping = 20
 controller_p = NodePath("../ARVROrigin/left_controller")
@@ -94,7 +94,7 @@ mesh = SubResource( 3 )
 material/0 = null
 
 [node name="Generic6DOFJoint" type="Generic6DOFJoint" parent="left_hand"]
-nodes/node_a = NodePath("../../head_collider")
+nodes/node_a = NodePath("../../hip")
 nodes/node_b = NodePath("..")
 collision/exclude_nodes = false
 linear_limit_x/enabled = false
@@ -116,7 +116,7 @@ contacts_reported = 10
 contact_monitor = true
 can_sleep = false
 script = ExtResource( 1 )
-body_p = NodePath("../head_collider")
+body_p = NodePath("../hip")
 stiffness = 400
 damping = 20
 controller_p = NodePath("../ARVROrigin/right_controller")
@@ -134,7 +134,7 @@ mesh = SubResource( 3 )
 material/0 = null
 
 [node name="Generic6DOFJoint" type="Generic6DOFJoint" parent="right_hand"]
-nodes/node_a = NodePath("../../head_collider")
+nodes/node_a = NodePath("../../hip")
 nodes/node_b = NodePath("..")
 collision/exclude_nodes = false
 linear_limit_x/enabled = false
@@ -180,8 +180,8 @@ contacts_reported = 2
 contact_monitor = true
 script = ExtResource( 7 )
 body_p = NodePath("../hip")
-stiffness = 400
-damping = 20
+stiffness = 700
+damping = 35
 hmd_p = NodePath("../ARVROrigin/hmd")
 
 [node name="CollisionShape" type="CollisionShape" parent="head_collider"]

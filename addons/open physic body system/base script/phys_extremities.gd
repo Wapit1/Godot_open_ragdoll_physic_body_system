@@ -114,18 +114,22 @@ func grab():
 	
 #	 add the function of grabbing to allow for both hand and feet grabbing with a single script insuring consistant behavior between the two
 	var obj_to_grab : Spatial
-	var grabable_array = []
+	var grabbable_array = []
 	
 	for node in can_grab_array :
-		grabable_array.append(node)
+		if node is Area:
+			if node.hand_pose.size() <= node.number_of_hand_grabbing:
+				return
+		grabbable_array.append(node)
+		
 	for node in get_colliding_bodies():
-		grabable_array.append(node)
-	print( "grabable array of " + self.get_name() + " :" + String(grabable_array))
-	if grabable_array.size() > 1:
+		grabbable_array.append(node)
+	print( "grabbable array of " + self.get_name() + " :" + String(grabbable_array))
+	if grabbable_array.size() > 1:
 		var current_priority : float
 		var highest_priority : float = -100
 		var approved_node := []
-		for node in grabable_array:
+		for node in grabbable_array:
 			current_priority = 0
 			if node == self:
 				print("something is wrong " + self.get_name() + " is trying to grab itself")
@@ -158,8 +162,8 @@ func grab():
 			obj_to_grab = approved_node[0]
 		grab_obj(obj_to_grab)
 		
-	elif grabable_array.size() == 1 && grabable_array[0] != self:
-		var obj = grabable_array[0]
+	elif grabbable_array.size() == 1 && grabbable_array[0] != self:
+		var obj = grabbable_array[0]
 		grab_obj(obj)
 #		
 
@@ -167,9 +171,7 @@ func grab():
 #		grab_obj.append(obj)
 		
 func grab_obj(obj_to_grab):
-	if obj_to_grab == self:
-		print(self.get_name() + " tried to grab itself")
-		return
+	
 	if obj_to_grab.get_parent() == self.get_parent():
 		print(self.get_name() + " tried to grab a body part of its body")
 		return
@@ -180,13 +182,18 @@ func grab_obj(obj_to_grab):
 	
 	offset = body.global_transform.origin - self.global_transform.origin + manual_offset
 	
-	
+	mode = MODE_KINEMATIC
+	original_collision_layer = collision_layer 
+	original_collision_mask = collision_mask
+	collision_layer = 0
+	collision_mask = 0
 #	 Follow node is created when there is no grab point
 	if obj_to_grab.is_in_group("grab_point"):
 		pos_joint.set_node_b("../" +get_path_to(obj_to_grab.get_parent()))
 		kin_follow_node = obj_to_grab
-		offset_from_grabbed_obj = self.global_transform.origin - obj_to_grab.global_transform.origin
 		
+		offset_from_grabbed_obj = obj_to_grab.hand_position
+		obj_to_grab.add_hand(self)
 	
 	else:
 		pos_joint.set_node_b("../" +get_path_to(obj_to_grab))
@@ -197,11 +204,7 @@ func grab_obj(obj_to_grab):
 		new_follow_node.global_transform.basis = self.global_transform.basis
 		kin_follow_node = new_follow_node
 	
-	mode = MODE_KINEMATIC
-	original_collision_layer = collision_layer 
-	original_collision_mask = collision_mask
-	collision_layer = 0
-	collision_mask = 0
+
 	
 	is_grabbing = true
 	grabbed_obj = obj_to_grab
@@ -220,6 +223,8 @@ func grab_obj(obj_to_grab):
 
 func drop():
 	print(self.get_name() + " is dropping")
+	offset_from_grabbed_obj = Vector3.ZERO
+	
 	if grab_joint != null:
 		grab_joint.queue_free()
 		grab_joint = null
@@ -227,6 +232,9 @@ func drop():
 #		only queue_free if it it a temporary position 3D, as we went to keep the grab point which are area3D
 		if kin_follow_node is Position3D:
 			kin_follow_node.queue_free()
+		elif kin_follow_node is Area:
+			kin_follow_node.remove_hand(self)
+			
 	grabbed_obj = null
 	if mode == MODE_KINEMATIC:
 #		global_transform.origin = body.global_transform.origin - target_pos + offset
@@ -249,12 +257,9 @@ func _physics_process(delta):
 				if kin_follow_node != null:
 					global_transform.origin = kin_follow_node.global_transform.origin + offset_from_grabbed_obj
 					global_transform.basis = kin_follow_node.global_transform.basis
-					if offset_from_grabbed_obj.length() > 0:
-						offset_from_grabbed_obj /= delta/10 
-					elif offset_from_grabbed_obj.length() != 0:
-						offset_from_grabbed_obj = Vector3.ZERO
+					
 			if !is_stable:
-				target_pos += offset
+				target_pos += offset + offset_from_grabbed_obj
 			
 			
 			if pos_joint != null:

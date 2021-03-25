@@ -6,7 +6,7 @@
 [ext_resource path="res://addons/open physic body system/VR script and scene/vr_hip.gd" type="Script" id=4]
 [ext_resource path="res://addons/open physic body system/VR script and scene/stabilizeARVR.gd" type="Script" id=5]
 [ext_resource path="res://addons/open physic body system/base script/stabilizing_sphere.gd" type="Script" id=6]
-[ext_resource path="res://addons/open physic body system/VR script and scene/head_collider.tres.gd" type="Script" id=7]
+[ext_resource path="res://addons/open physic body system/VR script and scene/head_collider.gd" type="Script" id=7]
 
 [sub_resource type="CubeMesh" id=1]
 size = Vector3( 1, 2, 2 )
@@ -77,6 +77,8 @@ contact_monitor = true
 can_sleep = false
 script = ExtResource( 1 )
 body_p = NodePath("../hip")
+PID_to_target = Vector3( 70, 0, 0.1 )
+PID_to_roll = Vector3( 25, 0, 0.01 )
 stiffness = 400
 damping = 20
 controller_p = NodePath("../ARVROrigin/left_controller")
@@ -117,6 +119,8 @@ contact_monitor = true
 can_sleep = false
 script = ExtResource( 1 )
 body_p = NodePath("../hip")
+PID_to_target = Vector3( 70, 0, 0.1 )
+PID_to_roll = Vector3( 25, 0, 0.01 )
 stiffness = 400
 damping = 20
 controller_p = NodePath("../ARVROrigin/right_controller")

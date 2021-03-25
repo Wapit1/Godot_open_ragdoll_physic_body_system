@@ -204,7 +204,9 @@ func grab_obj(obj_to_grab):
 		new_follow_node.global_transform.basis = self.global_transform.basis
 		kin_follow_node = new_follow_node
 	
-
+	stiffness = 600
+	damping = 35
+	configure_pos_joint()
 	
 	is_grabbing = true
 	grabbed_obj = obj_to_grab
@@ -267,6 +269,7 @@ func _physics_process(delta):
 				pos_joint.set("linear_spring_y/equilibrium_point", clamp(target_pos.y,-max_length.y, max_length.y))
 				pos_joint.set("linear_spring_z/equilibrium_point", clamp(target_pos.z,-max_length.z, max_length.z))
 			
+			print(self.get_name() + ":" +String(global_transform.origin))
 #			print(target_pos)
 			#rotation
 			var node_to_rot = self
@@ -284,17 +287,27 @@ func _physics_process(delta):
 					node_to_rot.add_torque(correction_to_target)
 					#roll
 					var error_roll : Vector3 
-					var cross_p_roll :Vector3 = target_basis.x.cross(transform.basis.x)
-					if target_basis.x.x > 0 && target_basis.y.y > 0 || target_basis.z.z > 0:
-						if cross_p_roll.z >= 0 :
-							error_roll = transform.basis.z * - cross_p_roll.length()
-						else:
-							error_roll = transform.basis.z *  cross_p_roll.length()
+
+					var angle_minus :=  target_basis.get_euler().z - global_transform.basis.get_euler().z
+					var angle_plus :=  PI - target_basis.get_euler().z - global_transform.basis.get_euler().z
+					var angle : float
+					if abs(angle_minus) < abs(angle_plus):
+						angle = angle_minus
 					else:
-						if cross_p_roll.z >= 0 :
-							error_roll = transform.basis.z * cross_p_roll.length()
-						else:
-							error_roll = transform.basis.z * - cross_p_roll.length()
+						angle = angle_plus
+#					print(angle/TAU)
+					error_roll = transform.basis.z * angle
+#					var cross_p_roll :Vector3 = target_basis.x.cross(transform.basis.x)
+#					if target_basis.x.x > 0 && target_basis.y.y > 0 || target_basis.z.z > 0:
+#						if cross_p_roll.z >= 0 :
+#							error_roll = transform.basis.z * - cross_p_roll.length()
+#						else:
+#							error_roll = transform.basis.z *  cross_p_roll.length()
+#					else:
+#						if cross_p_roll.z >= 0 :
+#							error_roll = transform.basis.z * cross_p_roll.length()
+#						else:
+#							error_roll = transform.basis.z * - cross_p_roll.length()
 					node_to_rot.add_torque(PID(error_roll,delta,2))
 
 
@@ -317,6 +330,7 @@ func PID(current_error:Vector3,time:float,PID_num:int):
 		last_error_r = current_error
 #		if deriv.length() > 15:
 #			print(rotation_degrees)
+#		print(current_error*PID_to_roll.x + integral_t *PID_to_roll.y + deriv*PID_to_roll.z)
 		return current_error*PID_to_roll.x + integral_t *PID_to_roll.y + deriv*PID_to_roll.z
 #
 

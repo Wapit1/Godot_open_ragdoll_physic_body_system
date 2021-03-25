@@ -23,8 +23,11 @@ mid_height = 2.5
 [sub_resource type="SphereMesh" id=5]
 
 [sub_resource type="SphereShape" id=6]
+radius = 2.0
 
 [sub_resource type="SphereMesh" id=7]
+radius = 2.0
+height = 4.0
 
 [sub_resource type="CapsuleMesh" id=8]
 radius = 0.1
@@ -70,17 +73,14 @@ height = 0.2
 [node name="left_hand" type="RigidBody" parent="."]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -4.76085, 2.72621, 0 )
 mass = 0.1
-gravity_scale = 0.0
 continuous_cd = true
 contacts_reported = 10
 contact_monitor = true
 can_sleep = false
 script = ExtResource( 1 )
 body_p = NodePath("../hip")
-PID_to_target = Vector3( 70, 0, 0.1 )
-PID_to_roll = Vector3( 25, 0, 0.01 )
-stiffness = 400
-damping = 20
+stiffness = 200
+damping = 10
 controller_p = NodePath("../ARVROrigin/left_controller")
 
 [node name="MeshInstance3" type="MeshInstance" parent="left_hand"]
@@ -92,6 +92,11 @@ shape = SubResource( 2 )
 
 [node name="MeshInstance" type="MeshInstance" parent="left_hand"]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1 )
+mesh = SubResource( 3 )
+material/0 = null
+
+[node name="MeshInstance2" type="MeshInstance" parent="left_hand"]
+transform = Transform( 1, 0, 0, 0, -1.62921e-07, -1, 0, 1, -1.62921e-07, 0, 0.891616, -0.0741625 )
 mesh = SubResource( 3 )
 material/0 = null
 
@@ -111,18 +116,12 @@ angular_limit_z/enabled = false
 
 [node name="right_hand" type="RigidBody" parent="."]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 2.91242, 3.03229, 0 )
-mass = 0.1
-gravity_scale = 0.0
 continuous_cd = true
 contacts_reported = 10
 contact_monitor = true
 can_sleep = false
 script = ExtResource( 1 )
 body_p = NodePath("../hip")
-PID_to_target = Vector3( 70, 0, 0.1 )
-PID_to_roll = Vector3( 25, 0, 0.01 )
-stiffness = 400
-damping = 20
 controller_p = NodePath("../ARVROrigin/right_controller")
 
 [node name="MeshInstance3" type="MeshInstance" parent="right_hand"]
@@ -215,7 +214,7 @@ mesh = SubResource( 7 )
 material/0 = null
 
 [node name="MeshInstance2" type="MeshInstance" parent="head_collider"]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1.10862 )
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 2.17975 )
 layers = 2
 mesh = SubResource( 8 )
 material/0 = null

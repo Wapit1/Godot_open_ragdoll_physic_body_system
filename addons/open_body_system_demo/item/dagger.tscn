@@ -35,7 +35,7 @@ radius = 0.5
 height = 0.5
 
 [node name="dagger" type="RigidBody"]
-mass = 0.5
+mass = 0.11
 
 [node name="MeshInstance" type="MeshInstance" parent="."]
 transform = Transform( -1.62921e-07, 0, 1, 0, 1, 0, -1, 0, -1.62921e-07, 0, 1.5, 0 )
